@@ -14,8 +14,6 @@ async function displayPhotographers(photographers) {
   photographers.forEach((photographer) => {
     // Create the DOM for the photographer card
     const card = photographerFactory(photographer).getUserCardDOM();
-
-    // Create a link wrapper for navigation
     const link = document.createElement('a');
     link.href = `photographer.html?id=${photographer.id}`;
     link.setAttribute('aria-label', `View details for ${photographer.name}`);
