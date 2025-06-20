@@ -16,21 +16,28 @@
     </header>
     <main id="main">
       <div class="photograph-header">
-        <button class="contact_button" onclick="displayModal()">
+        <button
+          class="contact_button"
+          onclick="displayModal()"
+          aria-label="Ouvrir le formulaire de contact"
+          tabindex="0"
+        >
           Contactez-moi
         </button>
       </div>
     </main>
+
+    <!-- Modal structure -->
     <div
       id="contact_modal"
       class="hidden"
       role="dialog"
-      aria-labelledby="contact-modal-title"
-      aria-hidden="true"
+      aria-labelledby="modalTitle"
+      aria-modal="true"
     >
       <div class="modal-content">
         <header>
-          <h2 id="contact-modal-title">Contactez-moi</h2>
+          <h2 id="modalTitle">Contactez-moi</h2>
           <button
             class="close"
             aria-label="Fermer la modale"
@@ -39,7 +46,7 @@
             X
           </button>
         </header>
-        <form id="contactForm">
+        <form id="contactForm" aria-label="Formulaire de contact">
           <div>
             <label for="firstName">Prénom</label>
             <input type="text" id="firstName" name="firstName" required />
@@ -52,10 +59,11 @@
             <label for="message">Message</label>
             <textarea id="message" name="message" required></textarea>
           </div>
-          <button type="submit" class="contact_button">Envoyer</button>
+          <button type="submit">Envoyer</button>
         </form>
       </div>
     </div>
+
     <script src="scripts/pages/photographer.js"></script>
     <script src="scripts/utils/contactForm.js"></script>
   </body>

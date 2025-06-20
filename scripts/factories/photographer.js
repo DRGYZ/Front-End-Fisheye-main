@@ -11,7 +11,6 @@ export function photographerFactory(data) {
     img.src = "assets/photographers/Photographers-List/" + portrait; // full path to Photographers-Listportrait; // relative path
     console.log(portrait);
     img.alt = `Portrait of ${name}`;
-    img.setAttribute('aria-hidden', 'false');
 
     // Create h2 for name
     const h2 = document.createElement('h2');
