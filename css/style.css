@@ -1,21 +1,26 @@
+/* ===== BASE STYLES ===== */
 @import url("photographer.css");
 
 body {
   font-family: "DM Sans", sans-serif;
   margin: 0;
+  overflow-x: hidden;
 }
+
 article {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
+
+/* ===== HEADER STYLES ===== */
 header {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   height: 90px;
+  padding: 0 20px;
 }
 
 h1 {
@@ -28,6 +33,7 @@ h1 {
   margin-left: 100px;
 }
 
+/* ===== PHOTOGRAPHER SECTION ===== */
 .photographer_section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -38,20 +44,24 @@ h1 {
 .photographer_section article {
   justify-self: center;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
 }
 
 .photographer_section article h2 {
   color: #d3573c;
   font-size: 36px;
+  margin: 10px 0;
 }
 
 .photographer_section article img {
   height: 200px;
   width: 200px;
+  border-radius: 50%;
+  object-fit: cover;
 }
+
+/* ===== LIGHTBOX STYLES ===== */
 #lightbox {
   position: fixed;
   top: 0;
@@ -63,12 +73,19 @@ h1 {
   justify-content: center;
   background: rgba(0, 0, 0, 0.9);
   z-index: 1000;
-  /* Initially hidden */
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
+
+#lightbox.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
 .lightbox-content {
-  max-width: 90%;
-  max-height: 80%;
+  max-width: 90vw;
+  max-height: 90vh;
   text-align: center;
   position: relative;
   color: white;
@@ -76,49 +93,140 @@ h1 {
 
 #lightbox img,
 #lightbox video {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 80vw;
+  max-height: 80vh;
+  border-radius: 5px;
 }
-button.prev,
-button.next {
+
+#lightbox-close,
+#lightbox-prev,
+#lightbox-next {
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  cursor: pointer;
   position: absolute;
+  z-index: 1001;
+}
+
+#lightbox-close {
+  top: 20px;
+  right: 20px;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+#lightbox-prev,
+#lightbox-next {
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: white;
+  font-size: 3rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+#lightbox-prev {
+  left: 20px;
+}
+
+#lightbox-next {
+  right: 20px;
+}
+
+/* ===== MODAL STYLES ===== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal[aria-hidden="false"] {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 5px;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+}
+
+.close-modal-icon {
   cursor: pointer;
-}
-
-button.prev {
-  left: 10px;
-}
-
-button.next {
-  right: 10px;
-}
-
-button.close {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: white;
-  cursor: pointer;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  width: 30px;
+  height: 30px;
 }
+
+/* ===== FORM STYLES ===== */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.contact_button {
+  align-self: flex-start;
+  padding: 10px 20px;
+  background-color: #901c1c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* ===== FOCUS STATES ===== */
 .modal-content:focus {
   outline: 3px solid #901c1c;
   outline-offset: 2px;
 }
+
 input:focus,
 textarea:focus,
 button:focus {
   outline: 2px solid #d3573c;
 }
-/* Screen reader only class */
+
+/* ===== UTILITY CLASSES ===== */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -131,7 +239,6 @@ button:focus {
   border: 0;
 }
 
-/* Form hints */
 .hint {
   display: block;
   font-size: 0.8rem;
@@ -139,7 +246,73 @@ button:focus {
   margin-top: 0.2rem;
 }
 
-/* Disable body scroll when modal open */
 .no-scroll {
   overflow: hidden;
+}
+
+/* ===== PHOTOGRAPHER PROFILE STYLES ===== */
+.photographer-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.location {
+  color: #901c1c;
+  font-size: 1.2rem;
+  margin: 5px 0;
+}
+
+.tagline {
+  color: #525252;
+  font-style: italic;
+}
+
+.photographer-portrait {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.media-card {
+  background: #fafafa;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.media-card:hover {
+  transform: translateY(-5px);
+}
+
+.media-card img,
+.media-card video {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.media-info {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.daily-rate-footer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: #d3573c;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px 0 0 0;
 }
