@@ -30,41 +30,104 @@
     <!-- Modal structure -->
     <div
       id="contact_modal"
-      class="hidden"
+      class="modal"
       role="dialog"
-      aria-labelledby="modalTitle"
       aria-modal="true"
+      aria-labelledby="contact_modal_title"
+      aria-describedby="contact_modal_description"
     >
       <div class="modal-content">
         <header>
-          <h2 id="modalTitle">Contactez-moi</h2>
-          <button
-            class="close"
-            aria-label="Fermer la modale"
-            onclick="closeModal()"
-          >
-            X
-          </button>
+          <h2 id="contact_modal_title">Contactez-moi</h2>
+          <img
+            src="assets/icons/close.svg"
+            alt="Fermer la fenêtre de contact"
+            class="close-modal-icon"
+            role="button"
+            tabindex="0"
+            aria-label="Fermer la fenêtre de contact"
+          />
         </header>
-        <form id="contactForm" aria-label="Formulaire de contact">
-          <div>
-            <label for="firstName">Prénom</label>
-            <input type="text" id="firstName" name="firstName" required />
+        <form>
+          <div class="form-group">
+            <label for="firstname" id="label-firstname">Prénom</label>
+            <input
+              type="text"
+              id="firstname"
+              name="firstname"
+              aria-required="true"
+              aria-labelledby="label-firstname"
+            />
           </div>
-          <div>
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required />
+
+          <div class="form-group">
+            <label for="lastname" id="label-lastname">Nom</label>
+            <input
+              type="text"
+              id="lastname"
+              name="lastname"
+              aria-required="true"
+              aria-labelledby="label-lastname"
+            />
           </div>
-          <div>
-            <label for="message">Message</label>
-            <textarea id="message" name="message" required></textarea>
+
+          <div class="form-group">
+            <label for="email" id="label-email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              aria-required="true"
+              aria-labelledby="label-email"
+              aria-describedby="email-hint"
+            />
+            <span id="email-hint" class="hint">Format: example@domain.com</span>
           </div>
-          <button type="submit">Envoyer</button>
+
+          <div class="form-group">
+            <label for="message" id="label-message">Votre message</label>
+            <textarea
+              id="message"
+              name="message"
+              aria-required="true"
+              aria-labelledby="label-message"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="contact_button"
+            aria-label="Envoyer le message"
+          >
+            Envoyer
+          </button>
         </form>
+      </div>
+    </div>
+
+    <div
+      id="lightbox"
+      class="hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="lightboxTitle"
+    >
+      <div class="lightbox-content">
+        <button
+          class="close"
+          aria-label="Fermer la lightbox"
+          onclick="closeLightbox()"
+        >
+          X
+        </button>
+        <div id="lightboxMedia"></div>
+        <button class="prev" onclick="showPrevious()">&#10094;</button>
+        <button class="next" onclick="showNext()">&#10095;</button>
       </div>
     </div>
 
     <script src="scripts/pages/photographer.js"></script>
     <script src="scripts/utils/contactForm.js"></script>
+    <script src="scripts/utils/modal.js"></script>
   </body>
 </html>
