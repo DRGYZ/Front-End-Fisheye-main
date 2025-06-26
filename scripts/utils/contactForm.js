@@ -1,4 +1,10 @@
 // Function to show the modal
+document.addEventListener("DOMContentLoaded", () => {
+  const contactBtn = document.getElementById("contact-btn");
+  if (contactBtn) {
+    contactBtn.addEventListener("click", displayModal);
+  }
+});
 function displayModal() {
   const modal = document.getElementById('contact_modal');
   modal.classList.remove('hidden');
