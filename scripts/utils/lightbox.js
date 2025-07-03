@@ -1,9 +1,12 @@
 let currentMediaIndex = 0;
 let mediaItems = [];
+let photographerID = '';
 
-function displayLightbox(index, items) {
+export function displayLightbox(index, items, id) {
+  console.log('Displaying lightbox for media index:', index, items);
   currentMediaIndex = index;
   mediaItems = items;
+  photographerID = id;
   const modal = document.getElementById('lightbox');
   modal.classList.add('active');
   modal.style.display = 'flex'; // or toggle class if preferred
@@ -17,12 +20,12 @@ function updateLightbox() {
 
   if (media.image) {
     const img = document.createElement('img');
-    img.src = media.image;
+    img.src = `assets/photographers/${photographerID}/${media.image}`;
     img.alt = media.title;
     container.appendChild(img);
   } else if (media.video) {
     const video = document.createElement('video');
-    video.src = media.video;
+    video.src = `assets/photographers/${photographerID}/${media.video}`;
     video.controls = true;
     container.appendChild(video);
   }
@@ -35,12 +38,20 @@ function closeLightbox() {
 }
 
 function showNext() {
-  currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
+  if(currentMediaIndex === mediaItems.length - 1) {
+    currentMediaIndex = 0;
+  } else {
+    currentMediaIndex++;
+  }
   updateLightbox();
 }
 
 function showPrevious() {
-  currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
+  if(currentMediaIndex === 0) {
+    currentMediaIndex = mediaItems.length - 1;
+  } else {
+    currentMediaIndex--;
+  }
   updateLightbox();
 }
 

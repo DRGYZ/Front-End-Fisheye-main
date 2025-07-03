@@ -1,4 +1,5 @@
 import { openModal, closeModal } from '../utils/modal.js';
+import { displayLightbox } from '../utils/lightbox.js';
 
 // Lightbox variables
 let currentMediaIndex = 0;
@@ -83,7 +84,7 @@ function displayPhotographerProfile(photographer) {
 }
 
 // Display media gallery
-function displayMediaGallery(mediaItems) {
+function displayMediaGallery(photographerID, mediaItems) {
   const gallery = document.createElement('div');
   gallery.id = 'media-gallery';
   gallery.className = 'media-grid';
@@ -95,11 +96,11 @@ function displayMediaGallery(mediaItems) {
     let mediaElement;
     if (media.image) {
       mediaElement = document.createElement('img');
-      mediaElement.src = `assets/images/${media.image}`;
+      mediaElement.src = `assets/photographers/${photographerID}/${media.image}`;
       mediaElement.alt = media.title;
     } else if (media.video) {
       mediaElement = document.createElement('video');
-      mediaElement.src = `assets/videos/${media.video}`;
+      mediaElement.src = `assets/photographers/${photographerID}/${media.video}`;
       mediaElement.controls = true;
       mediaElement.setAttribute('aria-label', media.title);
     }
@@ -124,7 +125,7 @@ function displayMediaGallery(mediaItems) {
     // Lightbox functionality
     mediaElement.addEventListener('click', () => {
       console.log('Opening lightbox for media index:', index);
-      displayLightbox(index, mediaItems);
+      displayLightbox(index, mediaItems, photographerID);
     });
   });
   
@@ -152,47 +153,6 @@ function displayDailyRate(price) {
   footer.appendChild(rateContainer);
   
   document.body.appendChild(footer);
-}
-
-// Lightbox functions
-function displayLightbox(index, mediaArray) {
-  currentMediaIndex = index;
-  mediaItems = mediaArray;
-  const modal = document.getElementById('lightbox');
-  modal.classList.add('active');
-  modal.style.display = 'flex';
-  modal.setAttribute('aria-hidden', 'false');
-  updateLightbox();
-}
-
-function closeLightbox() {
-  const modal = document.getElementById('lightbox');
-  modal.classList.remove('active');
-  modal.style.display = 'none';
-  modal.setAttribute('aria-hidden', 'true');
-}
-
-function updateLightbox() {
-  const lightboxMedia = document.getElementById('lightbox-media');
-  const lightboxTitle = document.getElementById('lightbox-title');
-  const currentMedia = mediaItems[currentMediaIndex];
-  
-  lightboxMedia.innerHTML = '';
-  let mediaElement;
-  
-  if (currentMedia.image) {
-    mediaElement = document.createElement('img');
-    mediaElement.src = `assets/images/${currentMedia.image}`;
-    mediaElement.alt = currentMedia.title;
-  } else if (currentMedia.video) {
-    mediaElement = document.createElement('video');
-    mediaElement.src = `assets/videos/${currentMedia.video}`;
-    mediaElement.controls = true;
-    mediaElement.setAttribute('aria-label', currentMedia.title);
-  }
-  
-  lightboxMedia.appendChild(mediaElement);
-  lightboxTitle.textContent = currentMedia.title;
 }
 
 // Navigation in lightbox
@@ -233,7 +193,7 @@ async function initPhotographerPage() {
     
     // Display content
     displayPhotographerProfile(photographer);
-    displayMediaGallery(photographerMedia);
+    displayMediaGallery(photographer.id, photographerMedia);
     displayDailyRate(photographer.price);
     
     // Initialize modal after short delay
