@@ -9,7 +9,7 @@ export function displayLightbox(index, items, id) {
   photographerID = id;
   const modal = document.getElementById('lightbox');
   modal.classList.add('active');
-  modal.style.display = 'flex'; // or toggle class if preferred
+  modal.style.display = 'flex'; 
   updateLightbox();
 }
 
