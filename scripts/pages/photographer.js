@@ -75,7 +75,7 @@ function displayPhotographerProfile(photographer) {
   portraitContainer.className = 'portrait-container';
   
   const portrait = document.createElement('img');
-  portrait.src = `assets/photographers/${photographer.portrait}`;
+  portrait.src = `assets/photographers/Photographers-List/${photographer.portrait}`;
   portrait.alt = `Portrait of ${photographer.name}`;
   portrait.className = 'photographer-portrait';
   
