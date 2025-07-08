@@ -24,8 +24,17 @@ header {
 }
 
 h1 {
-  color: #901c1c;
   margin-right: 100px;
+  color: rgba(211, 87, 60, 1);
+  margin-right: 100px;
+  width: 282px;
+  height: 83px;
+  opacity: 1;
+  position: fixed;
+  font-family: DM Sans;
+  font-weight: 400;
+  font-size: 64px;
+  line-height: 100%;
 }
 
 .logo {
@@ -273,6 +282,10 @@ button:focus {
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 20px;
+  position: absolute;
+  top: 56px;
+  left: 990px;
+  opacity: 1;
 }
 
 .media-grid {

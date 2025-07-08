@@ -65,3 +65,47 @@ contact_modal_title {
   font-size: 24px;
   margin-bottom: 20px;
 }
+.photograph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+.photograph-header div {
+  flex: 1;
+}
+.contact_button {
+  background-color: #911c1c;
+  color: white;
+  font-weight: bold;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  top: 137px;
+  left: 535px;
+  opacity: 1;
+  position: absolute;
+}
+
+.location,
+.tagline {
+  width: 124px;
+  height: 31px;
+  top: 83px;
+  opacity: 1;
+  position: absolute;
+  font-family: DM Sans;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 100%;
+}
+
+.portrait {
+  width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
+  object-fit: cover;
+}

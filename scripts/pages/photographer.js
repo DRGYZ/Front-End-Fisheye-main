@@ -81,6 +81,15 @@ function displayPhotographerProfile(photographer) {
   
   portraitContainer.appendChild(portrait);
   mainContainer.appendChild(portraitContainer);
+  const contactBtn = document.createElement("button");
+    contactBtn.textContent = "Contactez-moi";
+    contactBtn.classList.add("contact_button");
+    contactBtn.setAttribute("aria-label", "Contactez le photographe");
+    contactBtn.addEventListener("click", () => {
+        // Call your modal opening function here
+        displayModal();
+    });
+    mainContainer.appendChild(contactBtn);
 }
 
 // Display media gallery
