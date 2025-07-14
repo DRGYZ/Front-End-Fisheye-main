@@ -1,37 +1,56 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
-    <link href="css/photographer.css" rel="stylesheet" type="text/css" />
     <meta charset="utf-8" />
+    <title>Fisheye - photographe</title>
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link
       href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap"
       rel="stylesheet"
     />
-    <title>Fisheye - photographe</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/photographer.css" rel="stylesheet" type="text/css" />
   </head>
+
   <body>
     <header>
-      <img src="assets/images/logo.png" alt="Fisheye Logo" class="logo" />
+      <a href="index.html" aria-label="Retour à la page d’accueil">
+        <img src="assets/images/logo.png" alt="Fisheye Logo" class="logo" />
+      </a>
     </header>
+
     <main id="main">
+      <!-- Photographer Info will be dynamically inserted here -->
       <div class="photograph-header">
-        <button
-          class="contact_button"
-          onclick="displayModal()"
-          aria-label="Ouvrir le formulaire de contact"
-          tabindex="0"
-        >
-          Contactez-moi
-        </button>
+        <div class="photographer-info" id="photographer-info"></div>
+
+        <!-- Button added dynamically via JS too -->
+      </div>
+
+      <!-- Sorting Dropdown -->
+      <div class="sorting-container">
+        <label for="sort">Trier par</label>
+        <select id="sort" class="sort-select" aria-label="Trier les médias">
+          <option value="popularity">Popularité</option>
+          <option value="date">Date</option>
+          <option value="title">Titre</option>
+        </select>
+      </div>
+
+      <!-- Media Gallery Grid -->
+      <div class="media-grid" id="media-gallery"></div>
+
+      <!-- Footer with Total Likes + Price -->
+      <div class="daily-rate-footer" id="footer-likes-price">
+        <div class="total-likes" id="total-likes"></div>
+        <div class="daily-rate" id="daily-price"></div>
       </div>
     </main>
 
-    <!-- Modal structure -->
+    <!-- Contact Modal -->
     <div
       id="contact_modal"
-      class="modal"
+      class="modal hidden"
       role="dialog"
       aria-modal="true"
       aria-labelledby="contact_modal_title"
@@ -47,26 +66,27 @@
             role="button"
             tabindex="0"
             aria-label="Fermer la fenêtre de contact"
+            id="modal-close-icon"
           />
         </header>
-        <form>
+        <form id="contactForm">
           <div class="form-group">
-            <label for="firstname" id="label-firstname">Prénom</label>
+            <label for="firstName" id="label-firstname">Prénom</label>
             <input
               type="text"
-              id="firstname"
-              name="firstname"
+              id="firstName"
+              name="firstName"
               aria-required="true"
               aria-labelledby="label-firstname"
             />
           </div>
 
           <div class="form-group">
-            <label for="lastname" id="label-lastname">Nom</label>
+            <label for="lastName" id="label-lastname">Nom</label>
             <input
               type="text"
-              id="lastname"
-              name="lastname"
+              id="lastName"
+              name="lastName"
               aria-required="true"
               aria-labelledby="label-lastname"
             />
@@ -82,7 +102,9 @@
               aria-labelledby="label-email"
               aria-describedby="email-hint"
             />
-            <span id="email-hint" class="hint">Format: example@domain.com</span>
+            <span id="email-hint" class="hint"
+              >Format: exemple@domaine.com</span
+            >
           </div>
 
           <div class="form-group">
@@ -106,6 +128,7 @@
       </div>
     </div>
 
+    <!-- Lightbox -->
     <div
       id="lightbox"
       class="hidden"
@@ -115,18 +138,24 @@
     >
       <div class="lightbox-content">
         <button
+          id="lightbox-close"
           class="close"
           aria-label="Fermer la lightbox"
-          onclick="closeLightbox()"
         >
-          X
+          ×
         </button>
         <div id="lightboxMedia"></div>
-        <button class="prev" onclick="showPrevious()">&#10094;</button>
-        <button class="next" onclick="showNext()">&#10095;</button>
+        <button class="prev" id="lightbox-prev" aria-label="Média précédent">
+          &#10094;
+        </button>
+        <button class="next" id="lightbox-next" aria-label="Média suivant">
+          &#10095;
+        </button>
+        <h3 id="lightboxTitle"></h3>
       </div>
     </div>
 
+    <!-- Scripts -->
     <script type="module" src="scripts/pages/photographer.js"></script>
     <script type="module" src="scripts/utils/contactForm.js"></script>
     <script type="module" src="scripts/utils/modal.js"></script>

@@ -1,43 +1,53 @@
-/*function photographerTemplate(data) {
-    const { name, portrait } = data;
-
-    const picture = `assets/photographers/${portrait}`;
-
-    function getUserCardDOM() {
-        const article = document.createElement( 'article' );
-        const img = document.createElement( 'img' );
-        img.setAttribute("src", picture)
-        const h2 = document.createElement( 'h2' );
-        h2.textContent = name;
-        article.appendChild(img);
-        article.appendChild(h2);
-        return (article);
-    }
-    return { name, picture, getUserCardDOM }
-    
-}*/
-
+/**
+ * Creates a DOM element representing a photographer card.
+ * @param {Object} photographer - The photographer data object.
+ * @returns {HTMLElement} The complete card element.
+ */
 function createPhotographerCard(photographer) {
-  // Example: create elements and set attributes
-  const card = document.createElement('div');
-  card.className = 'photographer-card';
+  const { name, portrait, tagline, city, country, price, id } = photographer;
+  const pictureSrc = `assets/photographers/Photographers-List/${portrait}`;
+  const profileLink = `photographer.html?id=${id}`;
+
+  // Create main article
+  const article = document.createElement('article');
+  article.className = 'photographer-card';
+
+  // Wrap image in link
+  const link = document.createElement('a');
+  link.href = profileLink;
+  link.setAttribute('aria-label', `View profile of ${name}`);
 
   const img = document.createElement('img');
-  img.src = `assets/${photographer.portrait}`; // or full path
-  img.alt = `Portrait of ${photographer.name}`;
+  img.src = pictureSrc;
+  img.alt = `Portrait de ${name}`;
+  img.className = 'photographer-thumb';
 
-  const name = document.createElement('h2');
-  name.textContent = photographer.name;
+  const h2 = document.createElement('h2');
+  h2.textContent = name;
 
-  const tagline = document.createElement('p');
-  tagline.textContent = photographer.tagline;
+  link.appendChild(img);
+  link.appendChild(h2);
 
-  // Append elements
-  card.appendChild(img);
-  card.appendChild(name);
-  card.appendChild(tagline);
+  // Info below the image
+  const location = document.createElement('p');
+  location.className = 'photographer-location';
+  location.textContent = `${city}, ${country}`;
 
-  return card;
+  const taglineElem = document.createElement('p');
+  taglineElem.className = 'photographer-tagline';
+  taglineElem.textContent = tagline;
+
+  const priceElem = document.createElement('p');
+  priceElem.className = 'photographer-price';
+  priceElem.textContent = `${price}€/jour`;
+
+  // Assemble card
+  article.appendChild(link);
+  article.appendChild(location);
+  article.appendChild(taglineElem);
+  article.appendChild(priceElem);
+
+  return article;
 }
 
-console.log("Chargement du script!");
+console.log('Photographer card factory loaded! 🎞️');

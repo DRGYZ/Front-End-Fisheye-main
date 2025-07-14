@@ -1,42 +1,59 @@
-// Function to show the modal
+// Contact Modal Handler
+
+// DOMContentLoaded ensures everything's loaded before we try to attach events
 document.addEventListener("DOMContentLoaded", () => {
   const contactBtn = document.getElementById("contact-btn");
   if (contactBtn) {
-    contactBtn.addEventListener("click", displayModal);
+    contactBtn.addEventListener("click", showModal);
+  }
+
+  const form = document.getElementById("contactForm");
+  if (form) {
+    form.addEventListener("submit", handleFormSubmit);
   }
 });
-function displayModal() {
-  const modal = document.getElementById('contact_modal');
-  modal.classList.remove('hidden');
-  modal.classList.add('active');
-  document.getElementById('firstName').focus();
+
+function showModal() {
+  const modal = document.getElementById("contact_modal");
+  if (!modal) return;
+
+  modal.classList.remove("hidden");
+  modal.classList.add("active");
+
+  // Focus first input for accessibility
+  const firstInput = modal.querySelector("input, textarea, select");
+  if (firstInput) firstInput.focus();
 }
 
-// Function to hide the modal
 function closeModal() {
-  console.log('closeModal called');
-  const modal = document.getElementById('contact_modal');
-  modal.classList.add('hidden');
-  modal.classList.remove('active');
+  const modal = document.getElementById("contact_modal");
+  if (!modal) return;
+
+  modal.classList.add("hidden");
+  modal.classList.remove("active");
 }
 
-// Handle form submission
-document.getElementById('contactForm').addEventListener('submit', function(e) {
+function handleFormSubmit(e) {
   e.preventDefault();
-  const data = {
-    firstName: document.getElementById('firstName').value,
-    email: document.getElementById('email').value,
-    message: document.getElementById('message').value
-  };
-  console.log('Form submitted:', data);
-  this.reset();
-  closeModal();
-});
 
-// Close modal on Escape key press
-document.addEventListener('keydown', (e) => {
-  const modal = document.getElementById('contact_modal');
-  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+  const data = {
+    firstName: document.getElementById("firstName")?.value,
+    email: document.getElementById("email")?.value,
+    message: document.getElementById("message")?.value,
+  };
+
+  console.log("Form submitted:", data);
+
+  e.target.reset();
+  closeModal();
+}
+
+// Escape key closes modal
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+
+  const modal = document.getElementById("contact_modal");
+  if (modal && modal.classList.contains("active")) {
     closeModal();
   }
 });

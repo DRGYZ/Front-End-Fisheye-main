@@ -2,56 +2,64 @@ let currentMediaIndex = 0;
 let mediaItems = [];
 let photographerID = '';
 
-export function displayLightbox(index, items, id) {
-  console.log('Displaying lightbox for media index:', index, items);
-  currentMediaIndex = index;
-  mediaItems = items;
-  photographerID = id;
-  const modal = document.getElementById('lightbox');
-  modal.classList.add('active');
-  modal.style.display = 'flex'; 
-  updateLightbox();
-}
-
+// Core: Update the lightbox display with current media
 function updateLightbox() {
   const media = mediaItems[currentMediaIndex];
   const container = document.getElementById('lightboxMedia');
   container.innerHTML = '';
 
+  let mediaElement;
+
   if (media.image) {
-    const img = document.createElement('img');
-    img.src = `assets/photographers/${photographerID}/${media.image}`;
-    img.alt = media.title;
-    container.appendChild(img);
+    mediaElement = document.createElement('img');
+    mediaElement.src = `assets/photographers/${photographerID}/${media.image}`;
+    mediaElement.alt = media.title;
   } else if (media.video) {
-    const video = document.createElement('video');
-    video.src = `assets/photographers/${photographerID}/${media.video}`;
-    video.controls = true;
-    container.appendChild(video);
+    mediaElement = document.createElement('video');
+    mediaElement.src = `assets/photographers/${photographerID}/${media.video}`;
+    mediaElement.controls = true;
+    mediaElement.setAttribute('aria-label', media.title);
+  }
+
+  container.appendChild(mediaElement);
+
+  // Set media title
+  const titleElement = document.getElementById('lightboxTitle');
+  if (titleElement) {
+    titleElement.textContent = media.title;
   }
 }
 
+// Open and initialize lightbox
+export function displayLightbox(index, items, id) {
+  console.log('Displaying lightbox for media index:', index, items);
+  currentMediaIndex = index;
+  mediaItems = items;
+  photographerID = id;
+
+  const modal = document.getElementById('lightbox');
+  modal.classList.add('active');
+  modal.style.display = 'flex';
+
+  updateLightbox();
+}
+
+// Close lightbox
 function closeLightbox() {
   const modal = document.getElementById('lightbox');
   modal.classList.remove('active');
   modal.style.display = 'none';
 }
 
+// Show next media item
 function showNext() {
-  if(currentMediaIndex === mediaItems.length - 1) {
-    currentMediaIndex = 0;
-  } else {
-    currentMediaIndex++;
-  }
+  currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
   updateLightbox();
 }
 
+// Show previous media item
 function showPrevious() {
-  if(currentMediaIndex === 0) {
-    currentMediaIndex = mediaItems.length - 1;
-  } else {
-    currentMediaIndex--;
-  }
+  currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
   updateLightbox();
 }
 
@@ -59,7 +67,16 @@ function showPrevious() {
 document.addEventListener('keydown', (e) => {
   const modal = document.getElementById('lightbox');
   if (!modal.classList.contains('active')) return;
-  if (e.key === 'Escape') closeLightbox();
-  if (e.key === 'ArrowRight') showNext();
-  if (e.key === 'ArrowLeft') showPrevious();
+
+  switch (e.key) {
+    case 'Escape':
+      closeLightbox();
+      break;
+    case 'ArrowRight':
+      showNext();
+      break;
+    case 'ArrowLeft':
+      showPrevious();
+      break;
+  }
 });
