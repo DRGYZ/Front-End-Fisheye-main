@@ -1,29 +1,47 @@
-
 export function photographerFactory(data) {
-  const { id, name, portrait, tagline, city, country } = data;
+  const { id, name, portrait, tagline, city, country, price } = data;
 
   function getUserCardDOM() {
     const article = document.createElement('article');
+    article.classList.add('photographer-card');
     article.setAttribute('aria-label', `Photographer: ${name}`);
 
-    // Create image with alt text
-    const img = document.createElement('img');
-    img.src = "assets/photographers/Photographers-List/" + portrait; // full path to Photographers-Listportrait; // relative path
-    console.log(portrait);
-    img.alt = `Portrait of ${name}`;
+    // Link to photographer page
+    const link = document.createElement('a');
+    link.href = `photographer.html?id=${id}`;
+    link.setAttribute('aria-label', `View page of ${name}`);
 
-    // Create h2 for name
+    // Portrait
+    const img = document.createElement('img');
+    img.src = `assets/photographers/Photographers-List/${portrait}`;
+    img.alt = `Portrait de ${name}`;
+    link.appendChild(img);
+
+    // Name
     const h2 = document.createElement('h2');
     h2.textContent = name;
+    link.appendChild(h2);
 
-    // Create tagline paragraph
-    const pTagline = document.createElement('p');
-    pTagline.textContent = tagline;
+    // Location
+    const location = document.createElement('div');
+    location.classList.add('location');
+    location.textContent = `${city}, ${country}`;
 
-    // Wrap everything
-    article.appendChild(img);
-    article.appendChild(h2);
-    article.appendChild(pTagline);
+    // Tagline
+    const tag = document.createElement('div');
+    tag.classList.add('tagline');
+    tag.textContent = tagline;
+
+    // Price
+    const rate = document.createElement('div');
+    rate.classList.add('price');
+    rate.textContent = `${price}€/jour`;
+
+    // Combine all
+    article.appendChild(link);
+    article.appendChild(location);
+    article.appendChild(tag);
+    article.appendChild(rate);
 
     return article;
   }

@@ -56,32 +56,6 @@ h1 {
 }
 
 /* === PHOTOGRAPHER LISTING PAGE === */
-.photographer_section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.photographer_section article {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.photographer_section article h2 {
-  color: #d3573c;
-  font-size: 36px;
-  margin: 10px 0;
-}
-
-.photographer_section article img {
-  height: 200px;
-  width: 200px;
-  border-radius: 50%;
-  object-fit: cover;
-}
 
 /* === PHOTOGRAPHER PROFILE === */
 .photograph-header {
@@ -91,8 +65,7 @@ h1 {
   padding: 30px 100px;
   background: #fafafa;
   margin-bottom: 30px;
-  position: relative;
-  text-align: left;
+  gap: 30px; /* Add spacing between the three sections */
 }
 
 .photographer-info {
@@ -142,9 +115,12 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  z-index: 10;
-  margin-right: 536px;
+  transition: background-color 0.3s ease;
+  align-self: center; /* <== This makes it vertically centered */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-right: 530px;
 }
 
 .contact_button:hover {

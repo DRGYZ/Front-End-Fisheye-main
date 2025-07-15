@@ -22,7 +22,7 @@ function initContactModal() {
   contactModal.addEventListener('click', (e) => {
     if (e.target === contactModal) closeModal(contactModal);
   });
-
+console.log("Trying to find button:", document.getElementById("contact-btn"));
   contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
     console.log('Form submitted:', {
@@ -65,6 +65,9 @@ function displayPhotographerProfile(photographer) {
   const contactBtn = document.createElement('button');
   contactBtn.textContent = 'Contactez-moi';
   contactBtn.className = 'contact_button';
+  contactBtn.id = 'contact-btn';
+  contactBtn.addEventListener('click', () => openModal(document.getElementById('contact_modal')));
+  
   contactBtn.setAttribute('aria-label', 'Contactez le photographe');
 
   const portraitContainer = document.createElement('div');

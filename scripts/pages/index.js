@@ -24,6 +24,38 @@ async function displayPhotographers(photographers) {
     section.appendChild(link);
   });
 }
+function createPhotographerCard(photographer) {
+  const card = document.createElement('div');
+  card.className = 'photographer-card';
+
+  const img = document.createElement('img');
+  img.src = `assets/photographers/${photographer.portrait}`;
+  img.alt = `Portrait de ${photographer.name}`;
+
+  const name = document.createElement('h2');
+  name.textContent = photographer.name;
+
+  const location = document.createElement('div');
+  location.className = 'location';
+  location.textContent = `${photographer.city}, ${photographer.country}`;
+
+  const tagline = document.createElement('div');
+  tagline.className = 'tagline';
+  tagline.textContent = photographer.tagline;
+
+  const price = document.createElement('div');
+  price.className = 'price';
+  price.textContent = `${photographer.price}€/jour`;
+
+  card.appendChild(img);
+  card.appendChild(name);
+  card.appendChild(location);
+  card.appendChild(tagline);
+  card.appendChild(price);
+
+  return card;
+}
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   const data = await getPhotographers();
