@@ -35,12 +35,58 @@ const createFocusTrap = (modal) => {
     modal.removeEventListener('keydown', handleKeydown);
   };
 };
+export function createContactModal(photographerName) {
+  const modal = document.createElement('div');
+  modal.id = 'contact_modal';
+  modal.className = 'modal hidden';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-labelledby', 'contact_modal_title');
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <header class="photograph-header">
+        <h2 id="contact_modal_title">Contactez-moi<br><span>${photographerName}</span></h2>
+        <img
+          src="assets/icons/close.svg"
+          alt="Fermer la fenêtre de contact"
+          class="close-modal-icon"
+          role="button"
+          tabindex="0"
+          aria-label="Fermer la fenêtre de contact"
+        />
+      </header>
+      <form id="contactForm">
+        <div class="form-group">
+          <label for="firstName">Prénom</label>
+          <input type="text" id="firstName" name="firstName" required />
+        </div>
+        <div class="form-group">
+          <label for="lastName">Nom</label>
+          <input type="text" id="lastName" name="lastName" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="message">Votre message</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <button type="submit" class="contact_button">Envoyer</button>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+
 
 export const openModal = (modal) => {
   lastFocusedElement = document.activeElement;
 
   modal.style.display = 'block';
-  modal.setAttribute('aria-hidden', 'false');
+modal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('no-scroll');
 
   removeFocusTrap = createFocusTrap(modal);

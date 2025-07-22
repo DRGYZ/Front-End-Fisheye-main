@@ -10,8 +10,13 @@ let photographerID = null;
 function initContactModal() {
   const contactModal = document.getElementById('contact_modal');
   const contactButton = document.querySelector('.contact_button');
-  const closeButton = contactModal.querySelector('.close-modal-icon');
+  const closeButton = contactModal?.querySelector('.close-modal-icon');
   const contactForm = document.getElementById('contact-form');
+
+  if (!contactButton || !contactModal || !closeButton) {
+    console.warn("Modal or button elements not found 😢");
+    return;
+  }
 
   contactButton.addEventListener('click', () => openModal(contactModal));
   contactButton.addEventListener('keydown', (e) => e.key === 'Enter' && openModal(contactModal));
@@ -22,7 +27,7 @@ function initContactModal() {
   contactModal.addEventListener('click', (e) => {
     if (e.target === contactModal) closeModal(contactModal);
   });
-console.log("Trying to find button:", document.getElementById("contact-btn"));
+
   contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
     console.log('Form submitted:', {
@@ -83,8 +88,11 @@ function displayPhotographerProfile(photographer) {
   profileHeader.appendChild(infoContainer);
   profileHeader.appendChild(contactBtn);
   profileHeader.appendChild(portraitContainer);
-
   mainContainer.appendChild(profileHeader);
+   setTimeout(() => {
+    console.log("Trying to find button again:", document.querySelector('.contact_button'));
+    initContactModal();
+  }, 0); // delay to let DOM update
 }
 
 // Display media
@@ -264,7 +272,7 @@ async function initPhotographerPage() {
     displayMediaGallery(photographer.id, mediaItems);
     displayDailyRate(photographer.price);
 
-    setTimeout(initContactModal, 100);
+    
   } catch (err) {
     console.error('Error loading photographer data:', err);
     document.getElementById('main').innerHTML = `<p>Error: ${err.message}</p>`;

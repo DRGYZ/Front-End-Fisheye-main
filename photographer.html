@@ -58,6 +58,9 @@
       <div class="modal-content">
         <header class="photograph-header">
           <h2 id="contact_modal_title">Contactez-moi</h2>
+          <button class="close" aria-label="Close modal" onclick="closeModal()">
+            X
+          </button>
           <img
             src="assets/icons/close.svg"
             alt="Fermer la fenêtre de contact"
@@ -68,7 +71,7 @@
             id="modal-close-icon"
           />
         </header>
-        <form id="contactForm">
+        <form id="contact-form">
           <div class="form-group">
             <label for="firstName" id="label-firstname">Prénom</label>
             <input
