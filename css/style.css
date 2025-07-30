@@ -8,7 +8,9 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 .sr-only {
@@ -187,6 +189,8 @@ form label,
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 5px;
+  display: inline-block;
+  margin-bottom: 0.5rem;
 }
 
 form input,
@@ -199,6 +203,8 @@ form textarea,
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 14px;
+  z-index: 1;
+  position: relative;
 }
 
 /* === LIGHTBOX === */
@@ -212,7 +218,7 @@ form textarea,
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 1000;
+  z-index: 2000;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -378,4 +384,130 @@ form textarea,
   background-position: right 15px center;
   padding-right: 40px;
   cursor: pointer;
+}
+/* Modal Background */
+#contact_modal {
+  /* display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #d88271; /* That Figma reddish-pink */
+  border-radius: 10px;
+  padding: 2rem;
+  width: 600px;
+  max-width: 90%;
+  color: #000;
+  position: relative;
+  z-index: 1001;
+}
+
+/* Header */
+.modal-content .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+.modal-content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal-content h2 span {
+  display: block;
+  font-weight: 400;
+  margin-top: 0.5rem;
+}
+
+/* Close Icon */
+.close-modal-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* Form */
+#contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Labels */
+#contact-form label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+/* Inputs and Textarea */
+#contact-form input,
+#contact-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  box-sizing: border-box;
+  z-index: 10;
+  position: relative;
+  background-color: white; /* just in case bg was transparent */
+}
+
+/* Button */
+#contact-form button {
+  background-color: #901c1c;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  align-self: flex-start;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#contact-form button:hover {
+  background-color: #6f1313;
+}
+.error {
+  border: 2px solid #e74c3c;
+}
+
+.error-text {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-header h2 {
+  font-size: 2rem;
+  color: black;
+}
+
+.close-modal-icon {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
 }

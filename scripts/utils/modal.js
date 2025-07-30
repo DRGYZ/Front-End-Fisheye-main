@@ -36,6 +36,7 @@ const createFocusTrap = (modal) => {
   };
 };
 export function createContactModal(photographerName) {
+  console.log("Modal created!");
   const modal = document.createElement('div');
   modal.id = 'contact_modal';
   modal.className = 'modal hidden';
@@ -45,7 +46,7 @@ export function createContactModal(photographerName) {
 
   modal.innerHTML = `
     <div class="modal-content">
-      <header class="photograph-header">
+      <header class="modal-header">
         <h2 id="contact_modal_title">Contactez-moi<br><span>${photographerName}</span></h2>
         <img
           src="assets/icons/close.svg"
@@ -56,7 +57,7 @@ export function createContactModal(photographerName) {
           aria-label="Fermer la fenêtre de contact"
         />
       </header>
-      <form id="contactForm">
+      <form id="contact-form" novalidate>
         <div class="form-group">
           <label for="firstName">Prénom</label>
           <input type="text" id="firstName" name="firstName" required />
@@ -78,15 +79,55 @@ export function createContactModal(photographerName) {
     </div>
   `;
 
+  // Append modal to DOM
   document.body.appendChild(modal);
+
+  // ===== Validation Handler =====
+  const form = modal.querySelector('#contact-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const firstName = form.firstName.value.trim();
+    const lastName = form.lastName.value.trim();
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+
+    let errors = [];
+
+    if (!firstName) errors.push("Le prénom est requis.");
+    if (!lastName) errors.push("Le nom est requis.");
+    if (!email) errors.push("L'email est requis.");
+    if (!message) errors.push("Le message est requis.");
+
+    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+      errors.push("L'email n'est pas valide.");
+    }
+
+    if (errors.length > 0) {
+      alert(errors.join('\n'));
+      return;
+    }
+
+    // If valid, show success and close
+    console.log("✅ Form submitted with:", {
+      firstName, lastName, email, message
+    });
+
+    form.reset(); // Clear the form
+    closeModal(modal); // Close the modal
+  });
 }
+
 
 
 export const openModal = (modal) => {
   lastFocusedElement = document.activeElement;
 
-  modal.style.display = 'block';
-modal.setAttribute('aria-hidden', 'false');
+  modal.classList.remove('hidden');
+  modal.style.visibility = 'visible';
+  modal.style.opacity = '1';
+  modal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('no-scroll');
 
   removeFocusTrap = createFocusTrap(modal);
@@ -108,7 +149,9 @@ modal.setAttribute('aria-hidden', 'false');
 };
 
 export const closeModal = (modal) => {
-  modal.style.display = 'none';
+  modal.classList.add('hidden');
+  modal.style.visibility = 'hidden';
+  modal.style.opacity = '0';
   modal.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('no-scroll');
 

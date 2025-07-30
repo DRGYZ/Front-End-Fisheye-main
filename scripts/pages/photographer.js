@@ -1,4 +1,5 @@
-import { openModal, closeModal } from '../utils/modal.js';
+import { createContactModal, openModal, closeModal } from '../utils/modal.js';
+
 import { displayLightbox } from '../utils/lightbox.js';
 
 // Global variables
@@ -30,12 +31,15 @@ function initContactModal() {
 
   contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
+     if (validateForm()) {
     console.log('Form submitted:', {
       firstname: contactForm.firstname.value,
       lastname: contactForm.lastname.value,
       email: contactForm.email.value,
       message: contactForm.message.value
     });
+        e.target.reset();
+    }
     closeModal(contactModal);
   });
 }
@@ -268,6 +272,8 @@ async function initPhotographerPage() {
     mediaItems = data.media.filter(m => m.photographerId === id);
 
     displayPhotographerProfile(photographer);
+    createContactModal(photographer.name);
+    displayLightbox(0, mediaItems, photographer.id);
     displaySortingControls();
     displayMediaGallery(photographer.id, mediaItems);
     displayDailyRate(photographer.price);
@@ -280,7 +286,8 @@ async function initPhotographerPage() {
 }
 
 // Boot it up
-document.addEventListener('DOMContentLoaded', () => {
-  initPhotographerPage();
-  initLightboxControls();
+document.addEventListener('DOMContentLoaded', async () => {
+  await initPhotographerPage(); // wait until modal is created
+  initContactModal(); // NOW it's safe to init the modal logic
+  initLightboxControls(); // lightbox as usual
 });
