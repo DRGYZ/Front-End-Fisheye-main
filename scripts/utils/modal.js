@@ -123,12 +123,12 @@ export function createContactModal(photographerName) {
 
 export const openModal = (modal) => {
   lastFocusedElement = document.activeElement;
-
-  modal.classList.remove('hidden');
-  modal.style.visibility = 'visible';
-  modal.style.opacity = '1';
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.classList.add('no-scroll');
+  modal.style.display = 'flex';
+  // modal.classList.remove('hidden');
+  // modal.style.visibility = 'visible';
+  // modal.style.opacity = '1';
+  // modal.setAttribute('aria-hidden', 'false');
+  // document.body.classList.add('no-scroll');
 
   removeFocusTrap = createFocusTrap(modal);
 

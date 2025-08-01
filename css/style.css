@@ -130,8 +130,7 @@ h1 {
 }
 
 /* === MODAL === */
-#contact_modal,
-.modal {
+#contact_moda {
   position: fixed;
   top: 0;
   left: 0;
@@ -141,27 +140,19 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+}
+
+#contact_modal {
+  display: none;
 }
 
 #contact_modal.active,
 .modal[aria-hidden="false"] {
   opacity: 1;
   pointer-events: all;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  max-width: 600px;
-  width: 90%;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 button.close,
@@ -203,7 +194,6 @@ form textarea,
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 14px;
-  z-index: 1;
   position: relative;
 }
 
@@ -218,7 +208,6 @@ form textarea,
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 2000;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -251,7 +240,6 @@ form textarea,
   color: white;
   cursor: pointer;
   position: absolute;
-  z-index: 1001;
   width: 40px;
   height: 40px;
   font-size: 2rem;
@@ -396,7 +384,6 @@ form textarea,
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
@@ -409,7 +396,6 @@ form textarea,
   max-width: 90%;
   color: #000;
   position: relative;
-  z-index: 1001;
 }
 
 /* Header */
@@ -462,7 +448,6 @@ form textarea,
   border-radius: 5px;
   outline: none;
   box-sizing: border-box;
-  z-index: 10;
   position: relative;
   background-color: white; /* just in case bg was transparent */
 }
@@ -510,4 +495,15 @@ form textarea,
   cursor: pointer;
   width: 24px;
   height: 24px;
+}
+.likes {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.likes:hover {
+  color: #d3573c;
 }

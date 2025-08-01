@@ -1,48 +1,10 @@
-import { createContactModal, openModal, closeModal } from '../utils/modal.js';
-
 import { displayLightbox } from '../utils/lightbox.js';
+import { openContactModal, closeContactModal } from '../utils/contactForm.js';
 
 // Global variables
 let currentMediaIndex = 0;
 let mediaItems = [];
 let photographerID = null;
-
-// Init modal
-function initContactModal() {
-  const contactModal = document.getElementById('contact_modal');
-  const contactButton = document.querySelector('.contact_button');
-  const closeButton = contactModal?.querySelector('.close-modal-icon');
-  const contactForm = document.getElementById('contact-form');
-
-  if (!contactButton || !contactModal || !closeButton) {
-    console.warn("Modal or button elements not found 😢");
-    return;
-  }
-
-  contactButton.addEventListener('click', () => openModal(contactModal));
-  contactButton.addEventListener('keydown', (e) => e.key === 'Enter' && openModal(contactModal));
-
-  closeButton.addEventListener('click', () => closeModal(contactModal));
-  closeButton.addEventListener('keydown', (e) => e.key === 'Enter' && closeModal(contactModal));
-
-  contactModal.addEventListener('click', (e) => {
-    if (e.target === contactModal) closeModal(contactModal);
-  });
-
-  contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-     if (validateForm()) {
-    console.log('Form submitted:', {
-      firstname: contactForm.firstname.value,
-      lastname: contactForm.lastname.value,
-      email: contactForm.email.value,
-      message: contactForm.message.value
-    });
-        e.target.reset();
-    }
-    closeModal(contactModal);
-  });
-}
 
 // Display photographer profile
 function displayPhotographerProfile(photographer) {
@@ -75,7 +37,7 @@ function displayPhotographerProfile(photographer) {
   contactBtn.textContent = 'Contactez-moi';
   contactBtn.className = 'contact_button';
   contactBtn.id = 'contact-btn';
-  contactBtn.addEventListener('click', () => openModal(document.getElementById('contact_modal')));
+  contactBtn.addEventListener('click', openContactModal);
   
   contactBtn.setAttribute('aria-label', 'Contactez le photographe');
 
@@ -93,12 +55,30 @@ function displayPhotographerProfile(photographer) {
   profileHeader.appendChild(contactBtn);
   profileHeader.appendChild(portraitContainer);
   mainContainer.appendChild(profileHeader);
-   setTimeout(() => {
-    console.log("Trying to find button again:", document.querySelector('.contact_button'));
-    initContactModal();
-  }, 0); // delay to let DOM update
 }
+function addLikeFunctionality(likeElement, media) {
+  let liked = false;
 
+  likeElement.addEventListener('click', () => {
+    if (!liked) {
+      media.likes += 1;
+      liked = true;
+    } else {
+      media.likes -= 1;
+      liked = false;
+    }
+
+    // Update individual like display
+    likeElement.querySelector('.like-count').textContent = media.likes;
+
+    // Update total likes in footer
+    const totalLikesEl = document.querySelector('#total-likes');
+    if (totalLikesEl) {
+      const currentTotal = mediaItems.reduce((sum, m) => sum + m.likes, 0);
+      totalLikesEl.textContent = `${currentTotal} ❤️`;
+    }
+  });
+}
 // Display media
 function displayMediaGallery(id, items) {
   photographerID = id; // set globally for sorting
@@ -130,7 +110,10 @@ function displayMediaGallery(id, items) {
 
     const likes = document.createElement('p');
     likes.className = 'likes';
-    likes.innerHTML = `${media.likes} <span aria-label="likes">❤️</span>`;
+    likes.innerHTML = `<span class="like-count">${media.likes}</span> ❤️`;
+
+    // Make the likes interactive
+    addLikeFunctionality(likes, media);
 
     infoDiv.appendChild(title);
     infoDiv.appendChild(likes);
@@ -172,6 +155,7 @@ function displayDailyRate(price) {
 
   document.body.appendChild(footer);
 }
+
 
 // Sorting dropdown
 function displaySortingControls() {
@@ -272,7 +256,6 @@ async function initPhotographerPage() {
     mediaItems = data.media.filter(m => m.photographerId === id);
 
     displayPhotographerProfile(photographer);
-    createContactModal(photographer.name);
     displayLightbox(0, mediaItems, photographer.id);
     displaySortingControls();
     displayMediaGallery(photographer.id, mediaItems);
@@ -287,7 +270,6 @@ async function initPhotographerPage() {
 
 // Boot it up
 document.addEventListener('DOMContentLoaded', async () => {
-  await initPhotographerPage(); // wait until modal is created
-  initContactModal(); // NOW it's safe to init the modal logic
+  await initPhotographerPage();
   initLightboxControls(); // lightbox as usual
 });
