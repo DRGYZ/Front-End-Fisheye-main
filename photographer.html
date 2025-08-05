@@ -26,16 +26,6 @@
         <!-- Button added dynamically via JS too -->
       </div>
 
-      <!-- Sorting Dropdown -->
-      <div class="sorting-container">
-        <label for="sort">Trier par</label>
-        <select id="sort" class="sort-select" aria-label="Trier les médias">
-          <option value="popularity">Popularité</option>
-          <option value="date">Date</option>
-          <option value="title">Titre</option>
-        </select>
-      </div>
-
       <!-- Media Gallery Grid -->
       <div class="media-grid" id="media-gallery"></div>
 
@@ -53,14 +43,11 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="contact_modal_title"
-      aria-describedby="contact_modal_description"
     >
       <div class="modal-content">
         <header class="modal-header">
           <h2 id="contact_modal_title">Contactez-moi</h2>
-          <button class="close" aria-label="Close modal" onclick="closeModal()">
-            X
-          </button>
+          <button class="close-modal-icon" aria-label="Close modal">X</button>
         </header>
         <form id="contact-form">
           <div class="form-group">
@@ -112,7 +99,7 @@
 
           <button
             type="submit"
-            class="contact_button"
+            class="send_button"
             aria-label="Envoyer le message"
           >
             Envoyer
@@ -124,7 +111,7 @@
     <!-- Lightbox -->
     <div
       id="lightbox"
-      class="hidden"
+      class="lightbox hidden"
       role="dialog"
       aria-modal="true"
       aria-labelledby="lightboxTitle"
@@ -132,19 +119,22 @@
       <div class="lightbox-content">
         <button
           id="lightbox-close"
-          class="close"
+          class="lightbox-close"
           aria-label="Fermer la lightbox"
         >
           ×
         </button>
-        <div id="lightboxMedia"></div>
-        <button class="prev" id="lightbox-prev" aria-label="Média précédent">
+
+        <button id="lightbox-prev" aria-label="Média précédent">
           &#10094;
         </button>
-        <button class="next" id="lightbox-next" aria-label="Média suivant">
-          &#10095;
-        </button>
-        <h3 id="lightboxTitle"></h3>
+
+        <div class="lightbox-media-container">
+          <div id="lightboxMedia"></div>
+          <h3 id="lightboxTitle" class="lightbox-title"></h3>
+        </div>
+
+        <button id="lightbox-next" aria-label="Média suivant">&#10095;</button>
       </div>
     </div>
 

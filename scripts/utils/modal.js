@@ -1,4 +1,5 @@
-// ===== Focus Trap Modal Logic =====
+
+// ===== Modal Controller =====
 
 let removeFocusTrap = null;
 let lastFocusedElement = null;
@@ -8,35 +9,28 @@ const createFocusTrap = (modal) => {
   const focusableElements = modal.querySelectorAll(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
   );
-
-  if (focusableElements.length === 0) return null;
+  if (!focusableElements.length) return null;
 
   const firstElement = focusableElements[0];
   const lastElement = focusableElements[focusableElements.length - 1];
 
   const handleKeydown = (e) => {
     if (e.key !== 'Tab') return;
-
-    // Shift + Tab on first element => loop to last
     if (e.shiftKey && document.activeElement === firstElement) {
       e.preventDefault();
       lastElement.focus();
-    }
-    // Tab on last element => loop to first
-    else if (!e.shiftKey && document.activeElement === lastElement) {
+    } else if (!e.shiftKey && document.activeElement === lastElement) {
       e.preventDefault();
       firstElement.focus();
     }
   };
 
   modal.addEventListener('keydown', handleKeydown);
-
-  return () => {
-    modal.removeEventListener('keydown', handleKeydown);
-  };
+  return () => modal.removeEventListener('keydown', handleKeydown);
 };
+
+// Create modal dynamically
 export function createContactModal(photographerName) {
-  console.log("Modal created!");
   const modal = document.createElement('div');
   modal.id = 'contact_modal';
   modal.className = 'modal hidden';
@@ -48,14 +42,8 @@ export function createContactModal(photographerName) {
     <div class="modal-content">
       <header class="modal-header">
         <h2 id="contact_modal_title">Contactez-moi<br><span>${photographerName}</span></h2>
-        <img
-          src="assets/icons/close.svg"
-          alt="Fermer la fenêtre de contact"
-          class="close-modal-icon"
-          role="button"
-          tabindex="0"
-          aria-label="Fermer la fenêtre de contact"
-        />
+        <img src="assets/icons/close.svg" alt="Fermer la fenêtre de contact"
+          class="close-modal-icon" role="button" tabindex="0" aria-label="Fermer la fenêtre de contact" />
       </header>
       <form id="contact-form" novalidate>
         <div class="form-group">
@@ -79,65 +67,54 @@ export function createContactModal(photographerName) {
     </div>
   `;
 
-  // Append modal to DOM
   document.body.appendChild(modal);
 
-  // ===== Validation Handler =====
+  // Close button event
+  modal.querySelector('.close-modal-icon').addEventListener('click', () => closeModal(modal));
+
+  // Form validation
   const form = modal.querySelector('#contact-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const { firstName, lastName, email, message } = form;
+    const errors = [];
 
-    const firstName = form.firstName.value.trim();
-    const lastName = form.lastName.value.trim();
-    const email = form.email.value.trim();
-    const message = form.message.value.trim();
+    if (!firstName.value.trim()) errors.push("Le prénom est requis.");
+    if (!lastName.value.trim()) errors.push("Le nom est requis.");
+    if (!email.value.trim()) errors.push("L'email est requis.");
+    if (!message.value.trim()) errors.push("Le message est requis.");
 
-    let errors = [];
-
-    if (!firstName) errors.push("Le prénom est requis.");
-    if (!lastName) errors.push("Le nom est requis.");
-    if (!email) errors.push("L'email est requis.");
-    if (!message) errors.push("Le message est requis.");
-
-    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-    if (email && !emailRegex.test(email)) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email.value && !emailRegex.test(email.value)) {
       errors.push("L'email n'est pas valide.");
     }
 
-    if (errors.length > 0) {
+    if (errors.length) {
       alert(errors.join('\n'));
       return;
     }
 
-    // If valid, show success and close
     console.log("✅ Form submitted with:", {
-      firstName, lastName, email, message
+      firstName: firstName.value.trim(),
+      lastName: lastName.value.trim(),
+      email: email.value.trim(),
+      message: message.value.trim()
     });
 
-    form.reset(); // Clear the form
-    closeModal(modal); // Close the modal
+    form.reset();
+    closeModal(modal);
   });
 }
 
-
-
 export const openModal = (modal) => {
   lastFocusedElement = document.activeElement;
-  modal.style.display = 'flex';
-  // modal.classList.remove('hidden');
-  // modal.style.visibility = 'visible';
-  // modal.style.opacity = '1';
-  // modal.setAttribute('aria-hidden', 'false');
-  // document.body.classList.add('no-scroll');
-
+  modal.classList.remove('hidden');
+  modal.setAttribute('aria-hidden', 'false');
   removeFocusTrap = createFocusTrap(modal);
 
   escapeHandler = (e) => {
-    if (e.key === 'Escape') {
-      closeModal(modal);
-    }
+    if (e.key === 'Escape') closeModal(modal);
   };
-
   document.addEventListener('keydown', escapeHandler);
 
   setTimeout(() => {
@@ -150,8 +127,6 @@ export const openModal = (modal) => {
 
 export const closeModal = (modal) => {
   modal.classList.add('hidden');
-  modal.style.visibility = 'hidden';
-  modal.style.opacity = '0';
   modal.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('no-scroll');
 
@@ -159,12 +134,10 @@ export const closeModal = (modal) => {
     removeFocusTrap();
     removeFocusTrap = null;
   }
-
   if (escapeHandler) {
     document.removeEventListener('keydown', escapeHandler);
     escapeHandler = null;
   }
-
   if (lastFocusedElement) {
     lastFocusedElement.focus();
     lastFocusedElement = null;

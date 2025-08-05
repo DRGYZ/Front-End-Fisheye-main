@@ -7,12 +7,10 @@ let mediaItems = [];
 let photographerID = null;
 
 // Display photographer profile
-function displayPhotographerProfile(photographer) {
-  const mainContainer = document.getElementById('main');
-  mainContainer.innerHTML = '';
 
-  const profileHeader = document.createElement('div');
-  profileHeader.className = 'photograph-header';
+function displayPhotographerProfile(photographer) {
+  const profileHeader = document.querySelector('.photograph-header');
+  profileHeader.innerHTML = ''; // clear only the header section
 
   const infoContainer = document.createElement('div');
   infoContainer.className = 'photographer-info';
@@ -38,7 +36,6 @@ function displayPhotographerProfile(photographer) {
   contactBtn.className = 'contact_button';
   contactBtn.id = 'contact-btn';
   contactBtn.addEventListener('click', openContactModal);
-  
   contactBtn.setAttribute('aria-label', 'Contactez le photographe');
 
   const portraitContainer = document.createElement('div');
@@ -54,8 +51,8 @@ function displayPhotographerProfile(photographer) {
   profileHeader.appendChild(infoContainer);
   profileHeader.appendChild(contactBtn);
   profileHeader.appendChild(portraitContainer);
-  mainContainer.appendChild(profileHeader);
 }
+
 function addLikeFunctionality(likeElement, media) {
   let liked = false;
 
@@ -71,11 +68,11 @@ function addLikeFunctionality(likeElement, media) {
     // Update individual like display
     likeElement.querySelector('.like-count').textContent = media.likes;
 
-    // Update total likes in footer
-    const totalLikesEl = document.querySelector('#total-likes');
+    // Update total likes in footer dynamically
+    const totalLikesEl = document.querySelector('.likes-price-footer .total-likes');
     if (totalLikesEl) {
       const currentTotal = mediaItems.reduce((sum, m) => sum + m.likes, 0);
-      totalLikesEl.textContent = `${currentTotal} ❤️`;
+      totalLikesEl.innerHTML = `${currentTotal} <span aria-label="likes">❤️</span>`;
     }
   });
 }
@@ -135,11 +132,8 @@ function displayMediaGallery(id, items) {
 function displayDailyRate(price) {
   const totalLikes = mediaItems.reduce((sum, media) => sum + media.likes, 0);
 
-  const footer = document.createElement('footer');
-  footer.className = 'daily-rate-footer';
-
-  const rateContainer = document.createElement('div');
-  rateContainer.className = 'rate-container';
+  const footer = document.createElement('div');
+  footer.className = 'likes-price-footer';
 
   const likesTotal = document.createElement('span');
   likesTotal.className = 'total-likes';
@@ -149,17 +143,15 @@ function displayDailyRate(price) {
   dailyRate.className = 'daily-rate';
   dailyRate.textContent = `${price}€ / jour`;
 
-  rateContainer.appendChild(likesTotal);
-  rateContainer.appendChild(dailyRate);
-  footer.appendChild(rateContainer);
+  footer.appendChild(likesTotal);
+  footer.appendChild(dailyRate);
 
-  document.body.appendChild(footer);
+  document.getElementById('main').appendChild(footer);
 }
 
 
 // Sorting dropdown
 function displaySortingControls() {
-  const main = document.getElementById('main');
   const sortContainer = document.createElement('div');
   sortContainer.className = 'sorting-container';
 
@@ -186,12 +178,16 @@ function displaySortingControls() {
 
   sortContainer.appendChild(sortLabel);
   sortContainer.appendChild(sortSelect);
-  main.appendChild(sortContainer);
+
+  // Insert directly after the header
+  const header = document.querySelector('.photograph-header');
+  header.insertAdjacentElement('afterend', sortContainer);
 
   sortSelect.addEventListener('change', (e) => {
     sortMedia(e.target.value);
   });
 }
+
 
 // Sort media
 function sortMedia(criteria) {
@@ -256,7 +252,6 @@ async function initPhotographerPage() {
     mediaItems = data.media.filter(m => m.photographerId === id);
 
     displayPhotographerProfile(photographer);
-    displayLightbox(0, mediaItems, photographer.id);
     displaySortingControls();
     displayMediaGallery(photographer.id, mediaItems);
     displayDailyRate(photographer.price);

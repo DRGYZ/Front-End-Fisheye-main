@@ -1,3 +1,6 @@
+
+// ===== Lightbox Controller (Figma full-white design) =====
+
 let currentMediaIndex = 0;
 let mediaItems = [];
 let photographerID = '';
@@ -5,11 +8,12 @@ let photographerID = '';
 // Core: Update the lightbox display with current media
 function updateLightbox() {
   const media = mediaItems[currentMediaIndex];
-  const container = document.getElementById('lightboxMedia');
-  container.innerHTML = '';
+  const mediaContainer = document.getElementById('lightboxMedia');
+  const titleElement = document.getElementById('lightboxTitle');
+
+  mediaContainer.innerHTML = '';
 
   let mediaElement;
-
   if (media.image) {
     mediaElement = document.createElement('img');
     mediaElement.src = `assets/photographers/${photographerID}/${media.image}`;
@@ -21,25 +25,19 @@ function updateLightbox() {
     mediaElement.setAttribute('aria-label', media.title);
   }
 
-  container.appendChild(mediaElement);
-
-  // Set media title
-  const titleElement = document.getElementById('lightboxTitle');
-  if (titleElement) {
-    titleElement.textContent = media.title;
-  }
+  mediaContainer.appendChild(mediaElement);
+  titleElement.textContent = media.title;
 }
 
 // Open and initialize lightbox
 export function displayLightbox(index, items, id) {
-  console.log('Displaying lightbox for media index:', index, items);
   currentMediaIndex = index;
   mediaItems = items;
   photographerID = id;
 
   const modal = document.getElementById('lightbox');
+  modal.classList.remove('hidden');
   modal.classList.add('active');
-  modal.style.display = 'flex';
 
   updateLightbox();
 }
@@ -47,23 +45,26 @@ export function displayLightbox(index, items, id) {
 // Close lightbox
 function closeLightbox() {
   const modal = document.getElementById('lightbox');
+  modal.classList.add('hidden');
   modal.classList.remove('active');
-  modal.style.display = 'none';
 }
 
-// Show next media item
+// Navigation
 function showNext() {
   currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
   updateLightbox();
 }
 
-// Show previous media item
 function showPrevious() {
   currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
   updateLightbox();
 }
 
-// Keyboard navigation
+// Event Listeners
+document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
+document.getElementById('lightbox-next')?.addEventListener('click', showNext);
+document.getElementById('lightbox-prev')?.addEventListener('click', showPrevious);
+
 document.addEventListener('keydown', (e) => {
   const modal = document.getElementById('lightbox');
   if (!modal.classList.contains('active')) return;

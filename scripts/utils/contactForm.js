@@ -1,15 +1,21 @@
 const contactModal = document.getElementById('contact_modal');
-const closeButton = document.querySelector('#contact_modal .close');
-
 
 const openContactModal = () => {
-  contactModal.classList.remove('hidden');
+  if (contactModal) {
+    contactModal.classList.remove('hidden');
+  }
 };
 
 const closeContactModal = () => {
-  contactModal.classList.add('hidden');
+  if (contactModal) {
+    contactModal.classList.add('hidden');
+  }
 };
 
-closeButton.addEventListener('click', closeContactModal);
+// Attach close button event only if the element exists
+const closeButton = document.querySelector('#contact_modal .close-modal-icon');
+if (closeButton) {
+  closeButton.addEventListener('click', closeContactModal);
+}
 
 export { openContactModal, closeContactModal };
