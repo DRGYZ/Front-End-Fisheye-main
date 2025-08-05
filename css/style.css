@@ -538,3 +538,116 @@ form textarea,
 .likes:hover {
   color: #d3573c;
 }
+
+/* === Figma Layout Styles for Photographer Page === */
+
+/* === Photographer Page (Figma Layout) === */
+
+/* Header with photographer info and portrait */
+.photograph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Photographer name */
+.photographer-info h1 {
+  font-size: 2rem;
+  color: #901c1c;
+  margin: 0;
+}
+
+/* Location + tagline */
+.photographer-info .location {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.photographer-info .tagline {
+  margin-top: 0.25rem;
+  color: #525252;
+}
+
+/* Contact button styling */
+.contact_button {
+  background-color: #901c1c;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.contact_button:hover {
+  background-color: #6f1313;
+}
+
+/* Sorting container */
+.sorting-container {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sorting-container label {
+  font-weight: bold;
+}
+
+/* Sorting dropdown styling */
+.sort-select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #901c1c;
+  color: white;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+
+.sort-select option {
+  background-color: white;
+  color: black;
+}
+
+/* Likes + price footer */
+.likes-price-footer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: #db8876;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  display: flex;
+  gap: 2rem;
+  border-top-left-radius: 10px;
+  align-items: center;
+}
+
+/* Media card info (title + likes aligned) */
+.media-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.media-info h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.media-info .likes {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
