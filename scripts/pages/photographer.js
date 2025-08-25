@@ -1,5 +1,6 @@
-import { displayLightbox } from '../utils/lightbox.js';
-import { openContactModal, closeContactModal } from '../utils/contactForm.js';
+import { displayLightbox, closeLightbox } from '../utils/lightbox.js';
+import { openContactModal } from '../utils/contactForm.js';
+
 
 // Global variables
 let currentMediaIndex = 0;

@@ -1,83 +1,98 @@
+let _index = 0;
+let _items = [];
+let _pid = null;
+let _wired = false;
 
-// ===== Lightbox Controller (Figma full-white design) =====
+function els() {
+  return {
+    lb: document.getElementById('lightbox'),
+    media: document.getElementById('lightboxMedia'),
+    title: document.getElementById('lightboxTitle'),
+    btnClose: document.getElementById('lightbox-close'),
+    btnNext: document.getElementById('lightbox-next'),
+    btnPrev: document.getElementById('lightbox-prev'),
+  };
+}
 
-let currentMediaIndex = 0;
-let mediaItems = [];
-let photographerID = '';
+function render() {
+  const { media, title } = els();
+  if (!_items.length || !media) return;
 
-// Core: Update the lightbox display with current media
-function updateLightbox() {
-  const media = mediaItems[currentMediaIndex];
-  const mediaContainer = document.getElementById('lightboxMedia');
-  const titleElement = document.getElementById('lightboxTitle');
+  const m = _items[_index];
+  media.innerHTML = '';
 
-  mediaContainer.innerHTML = '';
-
-  let mediaElement;
-  if (media.image) {
-    mediaElement = document.createElement('img');
-    mediaElement.src = `assets/photographers/${photographerID}/${media.image}`;
-    mediaElement.alt = media.title;
-  } else if (media.video) {
-    mediaElement = document.createElement('video');
-    mediaElement.src = `assets/photographers/${photographerID}/${media.video}`;
-    mediaElement.controls = true;
-    mediaElement.setAttribute('aria-label', media.title);
+  let node;
+  if (m.image) {
+    node = document.createElement('img');
+    node.src = `assets/photographers/${_pid}/${m.image}`;
+    node.alt = m.title;
+  } else {
+    node = document.createElement('video');
+    node.src = `assets/photographers/${_pid}/${m.video}`;
+    node.controls = true;
+    node.setAttribute('aria-label', m.title);
   }
 
-  mediaContainer.appendChild(mediaElement);
-  titleElement.textContent = media.title;
+  media.appendChild(node);
+  if (title) title.textContent = m.title;
 }
 
-// Open and initialize lightbox
-export function displayLightbox(index, items, id) {
-  currentMediaIndex = index;
-  mediaItems = items;
-  photographerID = id;
+export function displayLightbox(index, items, photographerId) {
+  _index = index;
+  _items = items || [];
+  _pid = photographerId;
 
-  const modal = document.getElementById('lightbox');
-  modal.classList.remove('hidden');
-  modal.classList.add('active');
+  const { lb } = els();
+  if (!lb) return;
 
-  updateLightbox();
+  // show
+  lb.classList.remove('hidden');
+  lb.classList.add('active');
+  lb.setAttribute('aria-hidden', 'false');
+
+  wireControlsOnce();
+  render();
 }
 
-// Close lightbox
-function closeLightbox() {
-  const modal = document.getElementById('lightbox');
-  modal.classList.add('hidden');
-  modal.classList.remove('active');
+export function closeLightbox() {
+  const { lb, media } = els();
+  if (!lb) return;
+
+  lb.classList.add('hidden');
+  lb.classList.remove('active');
+  lb.setAttribute('aria-hidden', 'true');
+
+  if (media) media.innerHTML = '';
 }
 
-// Navigation
-function showNext() {
-  currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
-  updateLightbox();
+export function next() {
+  if (!_items.length) return;
+  _index = (_index + 1) % _items.length;
+  render();
 }
 
-function showPrevious() {
-  currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
-  updateLightbox();
+export function prev() {
+  if (!_items.length) return;
+  _index = (_index - 1 + _items.length) % _items.length;
+  render();
 }
 
-// Event Listeners
-document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
-document.getElementById('lightbox-next')?.addEventListener('click', showNext);
-document.getElementById('lightbox-prev')?.addEventListener('click', showPrevious);
+function wireControlsOnce() {
+  if (_wired) return;
+  const { btnClose, btnNext, btnPrev } = els();
 
-document.addEventListener('keydown', (e) => {
-  const modal = document.getElementById('lightbox');
-  if (!modal.classList.contains('active')) return;
+  btnClose?.addEventListener('click', closeLightbox);
+  btnNext?.addEventListener('click', next);
+  btnPrev?.addEventListener('click', prev);
 
-  switch (e.key) {
-    case 'Escape':
-      closeLightbox();
-      break;
-    case 'ArrowRight':
-      showNext();
-      break;
-    case 'ArrowLeft':
-      showPrevious();
-      break;
-  }
-});
+  document.addEventListener('keydown', (e) => {
+    const { lb } = els();
+    if (!lb || !lb.classList.contains('active')) return;
+
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+  });
+
+  _wired = true;
+}
