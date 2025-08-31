@@ -4,7 +4,9 @@
   "description": "## Démarrer le projet",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"scripts/**/*.js\"",
+    "lint:fix": "eslint \"scripts/**/*.js\" --fix"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,8 @@
   "devDependencies": {
     "@eslint/js": "^9.34.0",
     "eslint": "^9.34.0",
-    "globals": "^16.3.0"
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2"
   }
 }
