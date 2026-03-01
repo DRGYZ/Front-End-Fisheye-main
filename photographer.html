@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fisheye - photographe</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link
+      href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    <header>
+      <a href="index.html" aria-label="Retour à la page d’accueil">
+        <img src="assets/images/logo.png" alt="Fisheye Logo" class="logo" />
+      </a>
+    </header>
+
+    <main id="main">
+      <!-- Photographer Info will be dynamically inserted here -->
+      <div class="photograph-header">
+        <div class="photographer-info" id="photographer-info"></div>
+
+        <!-- Button added dynamically via JS too -->
+      </div>
+
+      <!-- Media Gallery Grid -->
+      <div class="media-grid" id="media-gallery"></div>
+
+      <!-- Footer with Total Likes + Price -->
+      <div class="daily-rate-footer" id="footer-likes-price">
+        <div class="total-likes" id="total-likes"></div>
+        <div class="daily-rate" id="daily-price"></div>
+      </div>
+    </main>
+
+    <!-- Contact Modal -->
+    <div
+      id="contact_modal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contact_modal_title"
+    >
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 id="contact_modal_title">Contactez-moi</h2>
+          <button class="close-modal-icon" aria-label="Close modal">X</button>
+        </header>
+        <form id="contact-form">
+          <div class="form-group">
+            <label for="firstName" id="label-firstname">Prénom</label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              aria-required="true"
+              aria-labelledby="label-firstname"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" id="label-lastname">Nom</label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              aria-required="true"
+              aria-labelledby="label-lastname"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email" id="label-email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              aria-required="true"
+              aria-labelledby="label-email"
+              aria-describedby="email-hint"
+            />
+            <span id="email-hint" class="hint"
+              >Format: exemple@domaine.com</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="message" id="label-message">Votre message</label>
+            <textarea
+              id="message"
+              name="message"
+              aria-required="true"
+              aria-labelledby="label-message"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="send_button"
+            aria-label="Envoyer le message"
+          >
+            Envoyer
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div
+      id="lightbox"
+      class="lightbox hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="lightboxTitle"
+    >
+      <div class="lightbox-content">
+        <button
+          id="lightbox-close"
+          class="lightbox-close"
+          aria-label="Fermer la lightbox"
+        >
+          ×
+        </button>
+
+        <button id="lightbox-prev" aria-label="Média précédent">
+          &#10094;
+        </button>
+
+        <div class="lightbox-media-container">
+          <div id="lightboxMedia"></div>
+          <h3 id="lightboxTitle" class="lightbox-title"></h3>
+        </div>
+
+        <button id="lightbox-next" aria-label="Média suivant">&#10095;</button>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="scripts/pages/photographer.js"></script>
+    <script type="module" src="scripts/utils/modal.js"></script>
+    <script type="module" src="scripts/utils/lightbox.js"></script>
+    <script type="module" src="scripts/utils/contactForm.js"></script>
+  </body>
+</html>
