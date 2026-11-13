@@ -1,6 +1,6 @@
 import { mediaSources } from '../catalogue.js';
 
-export function mediaFactory(media, aboveFold = false) {
+export function mediaFactory(media, aboveFold = false, plateNumber = null) {
   const sources = mediaSources(media);
 
   function getCardDOM() {
@@ -10,18 +10,34 @@ export function mediaFactory(media, aboveFold = false) {
     button.setAttribute('aria-label', 'Ouvrir : ' + media.title);
     button.setAttribute('aria-haspopup', 'dialog');
 
-    const preview = document.createElement('img');
-    preview.src = sources.preview;
-    preview.alt = '';
-    preview.loading = aboveFold ? 'eager' : 'lazy';
-    preview.decoding = 'async';
-    button.append(preview);
+    const img = document.createElement('img');
+    img.src = media.image ? sources.full : sources.preview;
+    if (media.image) {
+      img.srcset = sources.preview + ' 760w, ' + sources.full + ' 1600w';
+      img.sizes = '(max-width: 760px) 100vw, (max-width: 1024px) 50vw, 440px';
+    }
+    img.alt = '';
+    img.loading = aboveFold ? 'eager' : 'lazy';
+    img.decoding = 'async';
+    button.append(img);
+
+    if (plateNumber !== null) {
+      const plate = document.createElement('span');
+      plate.className = 'media-plate';
+      plate.textContent = 'N° ' + String(plateNumber).padStart(2, '0');
+      button.append(plate);
+    }
+
     if (media.video) {
+      const badge = document.createElement('span');
+      badge.className = 'media-type-badge';
+      badge.textContent = 'VIDÉO MP4';
+
       const play = document.createElement('span');
       play.className = 'media-play';
       play.textContent = '▶';
       play.setAttribute('aria-hidden', 'true');
-      button.append(play);
+      button.append(badge, play);
     }
 
     return button;
@@ -40,13 +56,18 @@ export function mediaFactory(media, aboveFold = false) {
     }
 
     const photo = document.createElement('img');
-    photo.src = sources.preview;
+    photo.src = sources.full;
     photo.alt = media.title;
-    const full = new Image();
-    full.src = sources.full;
-    full.decode().then(() => {
-      if (photo.isConnected) photo.src = full.src;
-    }, () => {});
+    photo.decoding = 'async';
+    photo.addEventListener(
+      'error',
+      () => {
+        if (photo.src !== sources.preview) {
+          photo.src = sources.preview;
+        }
+      },
+      { once: true },
+    );
     return photo;
   }
 

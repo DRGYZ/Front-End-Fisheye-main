@@ -1,5 +1,5 @@
-import { mediaFactory } from '../factories/media.js';
 import { mediaSources } from '../catalogue.js';
+import { mediaFactory } from '../factories/media.js';
 import { closeOnBackdrop } from './dialog.js';
 
 const dialog = document.getElementById('lightbox');
@@ -18,7 +18,8 @@ function render(direction = 0) {
   const media = mediaItems[activeIndex];
   const asset = mediaFactory(media).getLightboxDOM();
   mediaContainer.replaceChildren(asset);
-  title.textContent = media.title;
+  const year = media.date ? media.date.slice(0, 4) : '';
+  title.textContent = year ? media.title + ' (' + year + ')' : media.title;
   position.textContent = (activeIndex + 1) + ' / ' + mediaItems.length;
   previous.disabled = next.disabled = mediaItems.length < 2;
 
@@ -26,13 +27,17 @@ function render(direction = 0) {
     button.setAttribute('aria-pressed', String(index === activeIndex));
   }
   const activeFrame = strip.children[activeIndex];
-  strip.scrollLeft += activeFrame.getBoundingClientRect().left - strip.getBoundingClientRect().left
-    - (strip.clientWidth - activeFrame.offsetWidth) / 2;
+  if (activeFrame) {
+    strip.scrollLeft +=
+      activeFrame.getBoundingClientRect().left -
+      strip.getBoundingClientRect().left -
+      (strip.clientWidth - activeFrame.offsetWidth) / 2;
+  }
 
   if (direction && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     asset.animate(
-      [{ opacity: 0.4, transform: 'translateX(' + direction * 12 + 'px)' }, { opacity: 1, transform: 'none' }],
-      { duration: 180, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+      [{ opacity: 0.45, transform: 'translateX(' + direction * 16 + 'px)' }, { opacity: 1, transform: 'none' }],
+      { duration: 200, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
     );
   }
 }
@@ -46,26 +51,30 @@ export function openLightbox(index, items, trigger) {
   activeIndex = index;
   mediaItems = items;
   opener = trigger;
-  strip.replaceChildren(...items.map((item, index) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'lightbox-frame';
-    button.setAttribute('aria-label', item.title);
-    button.setAttribute('aria-pressed', 'false');
-    const frame = document.createElement('img');
-    frame.src = mediaSources(item).thumbnail;
-    frame.alt = '';
-    frame.loading = 'lazy';
-    frame.decoding = 'async';
-    button.append(frame);
-    button.addEventListener('click', (event) => {
-      if (activeIndex === index) return;
-      const direction = Math.sign(index - activeIndex);
-      activeIndex = index;
-      render(event.detail ? direction : 0);
-    });
-    return button;
-  }));
+  strip.replaceChildren(
+    ...items.map((item, idx) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'lightbox-frame';
+      button.setAttribute('aria-label', item.title);
+      button.setAttribute('aria-pressed', 'false');
+
+      const frame = document.createElement('img');
+      frame.src = mediaSources(item).preview;
+      frame.alt = '';
+      frame.loading = 'lazy';
+      frame.decoding = 'async';
+      button.append(frame);
+
+      button.addEventListener('click', (event) => {
+        if (activeIndex === idx) return;
+        const direction = Math.sign(idx - activeIndex);
+        activeIndex = idx;
+        render(event.detail ? direction : 0);
+      });
+      return button;
+    }),
+  );
   dialog.showModal();
   render();
 }
@@ -86,6 +95,8 @@ dialog.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
     event.preventDefault();
     move(event.key === 'ArrowLeft' ? -1 : 1, false);
-    if (strip.contains(event.target)) strip.children[activeIndex].focus({ preventScroll: true });
+    if (strip.contains(event.target)) {
+      strip.children[activeIndex]?.focus({ preventScroll: true });
+    }
   }
 });
