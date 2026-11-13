@@ -1,120 +1,32 @@
-# FishEye - Projet 6 OpenClassrooms
+# FishEye
 
-Site web accessible pour une plateforme de photographes.
-Ce projet met l'accent sur l'accessibilité (clavier, focus, ARIA) et l'architecture JavaScript côté front.
+J’ai développé ce site pour le parcours front-end d’OpenClassrooms. On peut parcourir six portfolios, trier les photos et vidéos, ouvrir un média en plein écran et tester le formulaire de contact.
 
-## Contexte
+[Voir la démo GitHub Pages](https://drgyz.github.io/Front-End-Fisheye-main/)
 
-Ce dépôt correspond au **Projet 6 du parcours Front-end OpenClassrooms** :
-développer un site de photographes en respectant les bonnes pratiques d'accessibilité.
+![L’annuaire des photographes](docs/screenshots/directory.webp)
 
-Le site contient :
+[Voir une page portfolio](docs/screenshots/portfolio.webp)
 
-- une page d'accueil listant les photographes,
-- une page profil photographe avec galerie média,
-- des interactions accessibles (likes, lightbox, modale de contact).
+## Lancer le projet
 
-## Fonctionnalités principales
+Le site utilise HTML, CSS et JavaScript. Il peut être servi directement depuis la racine du dépôt.
 
-### Page d'accueil (`index.html`)
-
-- Affichage dynamique des photographes depuis `data/photographers.json`.
-- Cartes cliquables vers `photographer.html?id=<id>`.
-- Liens avec libellés accessibles (`aria-label`).
-
-### Page photographe (`photographer.html`)
-
-- Affichage du profil (nom, localisation, tagline, portrait).
-- Galerie média (photos/vidéos) générée via une factory.
-- Tri des médias : popularité, date, titre.
-- Likes interactifs (1 like max par média par chargement).
-- Footer dynamique (total des likes + tarif journalier).
-
-### Lightbox
-
-- Ouverture depuis les médias (clic + clavier).
-- Navigation avec boutons et clavier (`ArrowLeft` / `ArrowRight`).
-- Fermeture via bouton ou touche `Escape`.
-- Gestion du focus pour éviter de laisser le focus dans un contenu masqué.
-
-### Modale de contact
-
-- Ouverture depuis le bouton "Contactez-moi".
-- Fermeture via la croix, clic extérieur ou `Escape`.
-- Focus trap dans la modale.
-- Restauration du focus sur l'élément déclencheur à la fermeture.
-
-## Accessibilité
-
-Le projet inclut les fondamentaux suivants :
-
-- Navigation clavier sur les éléments interactifs (`Tab`, `Enter`, `Space`).
-- Boutons natifs pour actions interactives (médias, likes).
-- `aria-label` sur les contrôles importants.
-- `aria-pressed` pour les boutons de like.
-- `role="dialog"` / `aria-modal` sur les overlays.
-- Focus trap dans la modale de contact.
-- Focus management sur la lightbox (ouverture/fermeture).
-- Styles de focus visibles (`:focus-visible`).
-
-## Technologies
-
-- HTML5
-- CSS3
-- JavaScript ES Modules (vanilla JS)
-- Fetch API (données JSON locales)
-- ESLint
-
-## Lancer le projet en local
-
-## Prérequis (pour le lint uniquement)
-
-- Node.js + npm (optionnel si vous ne lancez pas ESLint)
-
-### Option 1 - Live Server (VS Code)
-
-1. Ouvrir le dossier dans VS Code.
-2. Clic droit sur `index.html` > **Open with Live Server**.
-3. Ouvrir l'URL fournie par Live Server.
-
-### Option 2 - Serveur Python
-
-```bash
-python -m http.server 5173
+```sh
+python -m http.server 5173 --bind 127.0.0.1
 ```
 
-Puis ouvrir :
-`http://localhost:5173/`
+Ouvrez [localhost:5173](http://localhost:5173). Pour lancer ESLint et vérifier les chemins des fichiers du catalogue, utilisez Node.js 24.
 
-## Lint
-
-```bash
-npm install
-npm run lint
+```sh
+npm ci
+npm run verify
 ```
 
-## Structure rapide
+## Dans le code
 
-```text
-data/                  # Données locales JSON
-scripts/pages/         # Logique des pages (index, photographer)
-scripts/factories/     # Factories (photographe, média)
-scripts/utils/         # Utilitaires (lightbox, modale contact, etc.)
-css/                   # Styles globaux
-assets/                # Images, vidéos, icônes
-```
+- Dans l’annuaire, chaque photographe a une sélection de photos. On peut la parcourir avec les miniatures, les flèches ou en glissant sur l’image. Les miniatures WebP ont leur propre taille pour éviter de charger les grandes images à l’avance.
+- La galerie plein écran et le formulaire utilisent des boîtes de dialogue natives. La galerie se parcourt avec les flèches ou les miniatures. Les photos plein écran et les vidéos se chargent à l’ouverture du média.
+- Les mentions J’aime sont conservées pendant le tri. Vos ajouts disparaissent au rechargement. Le formulaire valide les champs dans le navigateur.
 
-## Démo clavier (rapide)
-
-- `Tab` sur un photographe dans l'index, puis `Enter` pour ouvrir sa page.
-- `Tab` sur un média, puis `Enter` pour ouvrir la lightbox.
-- `ArrowRight` / `ArrowLeft` dans la lightbox pour naviguer.
-- `Escape` pour fermer la lightbox.
-- `Tab` dans la modale de contact : le focus reste piégé dans la modale.
-- `Escape` ou `X` pour fermer la modale et revenir au bouton ouvreur.
-
-## Notes
-
-- Les likes ne sont **pas persistés** après refresh.
-- Les données proviennent d'un fichier local : `data/photographers.json`.
-- Le projet est front-end uniquement (pas de backend).
+Le catalogue se trouve dans `data/photographers.json`. Les pages et interactions sont dans `scripts/`, les aperçus dans `assets/previews/` et les fichiers plein écran dans `assets/photographers/`.

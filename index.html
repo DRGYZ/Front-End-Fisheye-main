@@ -1,31 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <title>Fisheye</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Parcourez les portfolios des photographes FishEye et consultez leurs tarifs." />
+    <title>FishEye | Nos photographes</title>
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <link
-      href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap"
-      rel="stylesheet"
-    />
-    <link href="css/photographer.css" rel="stylesheet" type="text/css" />
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="scripts/pages/index.js"></script>
   </head>
-
   <body>
-    <header class="header">
-      <img src="assets/images/logo.png" class="logo" alt="Fisheye logo" />
-      <h1 class="page-title">Nos photographes</h1>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="site-header">
+      <div class="shell masthead">
+        <a class="brand" href="index.html" aria-label="FishEye, accueil">
+          <img src="assets/images/logo.png" alt="" width="512" height="128" />
+        </a>
+      </div>
     </header>
 
-    <main class="photographer_section" aria-label="List of photographers">
-      <section class="photographer_section" id="photographer-list">
-        <!-- Cards will be injected here dynamically -->
-      </section>
+    <main class="shell directory" id="main" tabindex="-1">
+      <div class="directory-heading">
+        <h1>Nos photographes</h1>
+        <p class="directory-count" id="directory-count"></p>
+      </div>
+      <p id="directory-status" class="page-status" role="status">Chargement des portfolios…</p>
+      <div class="directory-browser" id="directory-browser" hidden>
+        <div class="photographer-list" id="photographer-list" role="group" aria-label="Choisir un photographe" aria-describedby="photographer-keys"></div>
+        <p class="sr-only" id="photographer-keys">Utilisez les flèches pour changer de photographe.</p>
+        <section class="directory-feature" id="directory-feature" aria-label="Aperçu du portfolio">
+          <div class="directory-display">
+            <div class="directory-stage" id="directory-stage" aria-busy="false"></div>
+            <div class="directory-caption">
+              <p class="photographer-location" id="feature-location"></p>
+              <h2 id="feature-name"></h2>
+              <p class="feature-tagline" id="feature-tagline"></p>
+              <p class="feature-rate" id="feature-rate"></p>
+              <a class="primary-button" id="feature-link">Voir le portfolio <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+          <div class="directory-view-controls" id="directory-view-controls">
+            <div class="directory-contact-sheet" id="feature-frames" role="group" aria-label="Choisir une photo"></div>
+            <div class="directory-view-nav">
+              <button class="icon-button" id="feature-prev" type="button" aria-label="Photo précédente">←</button>
+              <p class="frame-label" id="feature-frame-label" role="status"></p>
+              <button class="icon-button" id="feature-next" type="button" aria-label="Photo suivante">→</button>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
-
-    <!-- Scripts -->
-    <script type="module" src="scripts/templates/photographer.js"></script>
-    <script type="module" src="scripts/pages/index.js"></script>
+    <footer class="shell site-footer">
+      <span>FishEye</span>
+      <span>Projet OpenClassrooms</span>
+    </footer>
   </body>
 </html>

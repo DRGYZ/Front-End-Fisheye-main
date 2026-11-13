@@ -1,227 +1,157 @@
-import { displayLightbox } from '../utils/lightbox.js';
-import { openContactModal } from '../utils/contactForm.js';
+import { dailyRate, loadCatalogue, portraitSources } from '../catalogue.js';
 import { mediaFactory } from '../factories/media.js';
+import { openContactModal } from '../utils/contactForm.js';
+import { openLightbox } from '../utils/lightbox.js';
 
-let mediaItems = [];
-let photographerID = null;
+const profile = document.getElementById('photographer-info');
+const status = document.getElementById('profile-status');
+const portfolio = document.getElementById('portfolio');
+const gallery = document.getElementById('media-gallery');
+const likesTotal = document.getElementById('total-likes');
+const sort = document.getElementById('sort-select');
+const collator = new Intl.Collator('fr', { sensitivity: 'base' });
 
-function displayPhotographerProfile(photographer) {
-  const profileHeader = document.querySelector('.photograph-header');
-  profileHeader.innerHTML = '';
+const sortBy = {
+  popularity: (a, b) => b.likes - a.likes,
+  date: (a, b) => b.date.localeCompare(a.date),
+  title: (a, b) => collator.compare(a.title, b.title),
+};
 
-  const infoContainer = document.createElement('div');
-  infoContainer.className = 'photographer-info';
-
-  const title = document.createElement('h1');
-  title.textContent = photographer.name;
-  title.className = 'photographer-name';
-
-  const location = document.createElement('p');
-  location.className = 'location';
-  location.textContent = `${photographer.city}, ${photographer.country}`;
-
-  const tagline = document.createElement('p');
-  tagline.className = 'tagline';
-  tagline.textContent = photographer.tagline;
-
-  infoContainer.appendChild(title);
-  infoContainer.appendChild(location);
-  infoContainer.appendChild(tagline);
-
-  const contactBtn = document.createElement('button');
-  contactBtn.textContent = 'Contactez-moi';
-  contactBtn.className = 'contact_button';
-  contactBtn.id = 'contact-btn';
-  contactBtn.addEventListener('click', openContactModal);
-  contactBtn.setAttribute('aria-label', 'Contactez le photographe');
-
-  const portraitContainer = document.createElement('div');
-  portraitContainer.className = 'portrait-container';
-
-  const portrait = document.createElement('img');
-  portrait.src = `assets/photographers/Photographers-List/${photographer.portrait}`;
-  portrait.alt = `Portrait de ${photographer.name}`;
-  portrait.className = 'photographer-portrait';
-
-  portraitContainer.appendChild(portrait);
-
-  profileHeader.appendChild(infoContainer);
-  profileHeader.appendChild(contactBtn);
-  profileHeader.appendChild(portraitContainer);
+function textElement(tag, className, text) {
+  const element = document.createElement(tag);
+  element.className = className;
+  element.textContent = text;
+  return element;
 }
 
-function addLikeFunctionality(likeButton, media) {
-  // L'état est porté par l'objet media pour rester stable après un re-render (ex: tri).
-  likeButton.setAttribute('aria-pressed', media.userLiked ? 'true' : 'false');
-  likeButton.disabled = Boolean(media.userLiked);
+function renderProfile(person) {
+  const copy = document.createElement('div');
+  copy.className = 'profile-copy';
+  copy.append(
+    textElement('h1', 'profile-title', person.name),
+    textElement('p', 'profile-location', person.city + ', ' + person.country),
+    textElement('p', 'profile-tagline', person.tagline),
+  );
 
-  likeButton.addEventListener('click', () => {
+  const actions = document.createElement('div');
+  actions.className = 'profile-actions';
+  const contact = textElement('button', 'primary-button', 'Contacter');
+  contact.type = 'button';
+  contact.setAttribute('aria-haspopup', 'dialog');
+  contact.addEventListener('click', () => openContactModal(person.name, contact));
+  actions.append(contact, textElement('p', 'profile-rate', dailyRate(person.price)));
+  copy.append(actions);
+
+  const frame = document.createElement('div');
+  frame.className = 'profile-portrait';
+  const portrait = document.createElement('img');
+  portrait.src = portraitSources(person).preview;
+  portrait.alt = 'Portrait de ' + person.name;
+  portrait.decoding = 'async';
+  frame.append(portrait);
+
+  profile.append(copy, frame);
+  profile.hidden = false;
+  document.title = person.name + ' | FishEye';
+  document.querySelector('meta[name="description"]').content = 'Portfolio de ' + person.name + ' sur FishEye.';
+}
+
+function updateLikesTotal(items) {
+  const total = items.reduce((sum, item) => sum + item.likes, 0);
+  likesTotal.textContent = total + ' mentions J’aime';
+}
+
+function createLikeButton(media, items) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'like-button';
+  button.setAttribute('aria-label', 'Aimer : ' + media.title);
+
+  const count = textElement('span', 'like-count', media.likes);
+  const icon = textElement('span', 'like-icon', '♥');
+  icon.setAttribute('aria-hidden', 'true');
+  button.append(icon, count);
+
+  function sync() {
+    count.textContent = media.likes;
+    button.setAttribute('aria-pressed', String(Boolean(media.userLiked)));
+    button.setAttribute('aria-disabled', String(Boolean(media.userLiked)));
+  }
+
+  button.addEventListener('click', () => {
     if (media.userLiked) return;
-
     media.likes += 1;
     media.userLiked = true;
-
-    likeButton.querySelector('.like-count').textContent = media.likes;
-    likeButton.setAttribute('aria-pressed', 'true');
-    likeButton.disabled = true;
-
-    const totalLikesEl = document.querySelector('.likes-price-footer .total-likes');
-    if (totalLikesEl) {
-      const currentTotal = mediaItems.reduce((sum, m) => sum + m.likes, 0);
-      totalLikesEl.innerHTML = `${currentTotal} <span aria-label="likes">❤️</span>`;
-    }
-  });
-}
-
-function displayMediaGallery(id, items) {
-  photographerID = id;
-  let gallery;
-  if (document.querySelector('.media-grid')) {
-    gallery = document.querySelector('.media-grid');
-    gallery.innerHTML = '';
-  } else {
-    gallery = document.createElement('div');
-    gallery.id = 'media-gallery';
-    gallery.className = 'media-grid';
-  }
-
-  items.forEach((media, index) => {
-    const mediaCard = document.createElement('article');
-    mediaCard.className = 'media-card';
-    const mediaButton = mediaFactory(media, id).getCardDOM();
-
-    const infoDiv = document.createElement('div');
-    infoDiv.className = 'media-info';
-
-    const title = document.createElement('h2');
-    title.textContent = media.title;
-
-    const likes = document.createElement('button');
-    likes.type = 'button';
-    likes.className = 'like-button';
-    likes.setAttribute('aria-label', `Like ${media.title}`);
-    likes.setAttribute('aria-pressed', 'false');
-    likes.innerHTML = `<span class="like-count">${media.likes}</span> <span aria-hidden="true">❤️</span>`;
-
-    addLikeFunctionality(likes, media);
-
-    infoDiv.appendChild(title);
-    infoDiv.appendChild(likes);
-
-    mediaCard.appendChild(mediaButton);
-    mediaCard.appendChild(infoDiv);
-    gallery.appendChild(mediaCard);
-
-    mediaButton.addEventListener('click', () => {
-      displayLightbox(index, mediaItems, photographerID);
-    });
+    sync();
+    updateLikesTotal(items);
   });
 
-  document.getElementById('main').appendChild(gallery);
+  sync();
+  return button;
 }
 
-function displayDailyRate(price) {
-  const totalLikes = mediaItems.reduce((sum, media) => sum + media.likes, 0);
+function renderGallery(items) {
+  const cards = items.map((media, index) => {
+    const card = document.createElement('article');
+    card.className = 'media-card';
+    const preview = mediaFactory(media, index < 3).getCardDOM();
+    preview.addEventListener('click', () => openLightbox(index, items, preview));
 
-  const footer = document.createElement('div');
-  footer.className = 'likes-price-footer';
+    const title = textElement('h3', 'media-title', media.title);
+    title.lang = 'en';
 
-  const likesTotal = document.createElement('span');
-  likesTotal.className = 'total-likes';
-  likesTotal.innerHTML = `${totalLikes} <span aria-label="likes">❤️</span>`;
-
-  const dailyRate = document.createElement('span');
-  dailyRate.className = 'daily-rate';
-  dailyRate.textContent = `${price}€ / jour`;
-
-  footer.appendChild(likesTotal);
-  footer.appendChild(dailyRate);
-
-  document.getElementById('main').appendChild(footer);
-}
-
-function displaySortingControls() {
-  const sortContainer = document.createElement('div');
-  sortContainer.className = 'sorting-container';
-
-  const sortLabel = document.createElement('label');
-  sortLabel.textContent = 'Trier par';
-  sortLabel.htmlFor = 'sort-select';
-
-  const sortSelect = document.createElement('select');
-  sortSelect.id = 'sort-select';
-  sortSelect.className = 'sort-select';
-
-  const options = [
-    { value: 'popularity', text: 'Popularité' },
-    { value: 'date', text: 'Date' },
-    { value: 'title', text: 'Titre' }
-  ];
-
-  options.forEach(({ value, text }) => {
-    const option = document.createElement('option');
-    option.value = value;
-    option.textContent = text;
-    sortSelect.appendChild(option);
+    const caption = document.createElement('div');
+    caption.className = 'media-caption';
+    const details = document.createElement('div');
+    details.append(title);
+    if (media.video) details.append(textElement('p', 'media-type', 'Vidéo'));
+    caption.append(details, createLikeButton(media, items));
+    card.append(preview, caption);
+    return card;
   });
-
-  sortContainer.appendChild(sortLabel);
-  sortContainer.appendChild(sortSelect);
-
-  const header = document.querySelector('.photograph-header');
-  header.insertAdjacentElement('afterend', sortContainer);
-
-  sortSelect.addEventListener('change', (e) => {
-    sortMedia(e.target.value);
-  });
+  gallery.replaceChildren(...cards);
 }
 
-function sortMedia(criteria) {
-  switch (criteria) {
-    case 'popularity':
-      mediaItems.sort((a, b) => b.likes - a.likes);
-      break;
-    case 'date':
-      mediaItems.sort((a, b) => new Date(b.date) - new Date(a.date));
-      break;
-    case 'title':
-      mediaItems.sort((a, b) => a.title.localeCompare(b.title));
-      break;
-  }
-
-  const gallery = document.getElementById('media-gallery');
-  if (gallery) gallery.remove();
-  displayMediaGallery(photographerID, mediaItems);
-}
-
-async function initPhotographerPage() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const id = parseInt(urlParams.get('id'));
-
-  if (!id) {
-    document.getElementById('main').innerHTML = '<p>Photographer ID not provided.</p>';
+async function init() {
+  const id = Number(new URLSearchParams(window.location.search).get('id'));
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    status.textContent = 'Ce portfolio est introuvable.';
     return;
   }
 
   try {
-    const url = new URL('../../data/photographers.json', import.meta.url);
-    const data = await (await fetch(url)).json();
+    const { photographers, media } = await loadCatalogue();
+    const person = photographers.find((photographer) => photographer.id === id);
+    if (!person) {
+      status.textContent = 'Ce portfolio est introuvable.';
+      return;
+    }
 
-    const photographer = data.photographers.find(p => p.id === id);
-    if (!photographer) throw new Error('Photographer not found');
+    const items = media.filter((item) => item.photographerId === id);
+    renderProfile(person);
+    status.hidden = true;
+    portfolio.hidden = false;
+    document.getElementById('media-count').textContent =
+      items.length + (items.length === 1 ? ' média' : ' médias');
 
-    mediaItems = data.media.filter(m => m.photographerId === id);
+    if (!items.length) {
+      sort.disabled = true;
+      gallery.append(textElement('p', 'page-status', 'Aucun média dans ce portfolio.'));
+      return;
+    }
 
-    displayPhotographerProfile(photographer);
-    displaySortingControls();
-    displayMediaGallery(photographer.id, mediaItems);
-    displayDailyRate(photographer.price);
-  } catch (err) {
-    console.error('Error loading photographer data:', err);
-    document.getElementById('main').innerHTML = `<p>Error: ${err.message}</p>`;
+    function applySort() {
+      items.sort(sortBy[sort.value] ?? sortBy.popularity);
+      renderGallery(items);
+    }
+
+    sort.addEventListener('change', applySort);
+    applySort();
+    updateLikesTotal(items);
+  } catch {
+    status.textContent = 'Impossible de charger le portfolio. Actualisez la page pour réessayer.';
+    status.hidden = false;
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await initPhotographerPage();
-});
+await init();

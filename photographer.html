@@ -1,147 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <title>Fisheye - photographe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Découvrez le portfolio de ce photographe sur FishEye." />
+    <title>FishEye | Portfolio</title>
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <link
-      href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap"
-      rel="stylesheet"
-    />
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="scripts/pages/photographer.js"></script>
   </head>
-
   <body>
-    <header>
-      <a href="index.html" aria-label="Retour à la page d’accueil">
-        <img src="assets/images/logo.png" alt="Fisheye Logo" class="logo" />
-      </a>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="site-header">
+      <div class="shell masthead">
+        <a class="brand" href="index.html" aria-label="FishEye, accueil">
+          <img src="assets/images/logo.png" alt="" width="512" height="128" />
+        </a>
+        <nav aria-label="Navigation principale">
+          <a class="back-link" href="index.html"><span aria-hidden="true">←</span> Tous les photographes</a>
+        </nav>
+      </div>
     </header>
 
-    <main id="main">
-      <!-- Photographer Info will be dynamically inserted here -->
-      <div class="photograph-header">
-        <div class="photographer-info" id="photographer-info"></div>
-
-        <!-- Button added dynamically via JS too -->
-      </div>
-
-      <!-- Media Gallery Grid -->
-      <div class="media-grid" id="media-gallery"></div>
-
-      <!-- Footer with Total Likes + Price -->
-      <div class="daily-rate-footer" id="footer-likes-price">
-        <div class="total-likes" id="total-likes"></div>
-        <div class="daily-rate" id="daily-price"></div>
-      </div>
-    </main>
-
-    <!-- Contact Modal -->
-    <div
-      id="contact_modal"
-      class="modal hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="contact_modal_title"
-    >
-      <div class="modal-content">
-        <header class="modal-header">
-          <h2 id="contact_modal_title">Contactez-moi</h2>
-          <button class="close-modal-icon" aria-label="Close modal">X</button>
-        </header>
-        <form id="contact-form">
-          <div class="form-group">
-            <label for="firstName" id="label-firstname">Prénom</label>
-            <input
-              type="text"
-              id="firstName"
-              name="firstName"
-              aria-required="true"
-              aria-labelledby="label-firstname"
-            />
+    <main class="shell profile" id="main" tabindex="-1">
+      <p class="page-status" id="profile-status" role="status">Chargement du portfolio…</p>
+      <div class="profile-header" id="photographer-info" hidden></div>
+      <section class="gallery" id="portfolio" aria-labelledby="gallery-title" hidden>
+        <div class="gallery-header">
+          <div>
+            <h2 id="gallery-title">Portfolio</h2>
+            <p class="gallery-meta"><span id="media-count"></span><span class="total-likes" id="total-likes" aria-live="polite"></span></p>
           </div>
-
-          <div class="form-group">
-            <label for="lastName" id="label-lastname">Nom</label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              aria-required="true"
-              aria-labelledby="label-lastname"
-            />
+          <div class="sort-control">
+            <label for="sort-select">Trier par</label>
+            <select id="sort-select">
+              <option value="popularity">Popularité</option>
+              <option value="date">Date</option>
+              <option value="title">Titre</option>
+            </select>
           </div>
-
-          <div class="form-group">
-            <label for="email" id="label-email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              aria-required="true"
-              aria-labelledby="label-email"
-              aria-describedby="email-hint"
-            />
-            <span id="email-hint" class="hint"
-              >Format: exemple@domaine.com</span
-            >
-          </div>
-
-          <div class="form-group">
-            <label for="message" id="label-message">Votre message</label>
-            <textarea
-              id="message"
-              name="message"
-              aria-required="true"
-              aria-labelledby="label-message"
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            class="send_button"
-            aria-label="Envoyer le message"
-          >
-            Envoyer
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Lightbox -->
-    <div
-      id="lightbox"
-      class="lightbox hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="lightboxTitle"
-    >
-      <div class="lightbox-content">
-        <button
-          id="lightbox-close"
-          class="lightbox-close"
-          aria-label="Fermer la lightbox"
-        >
-          ×
-        </button>
-
-        <button id="lightbox-prev" aria-label="Média précédent">
-          &#10094;
-        </button>
-
-        <div class="lightbox-media-container">
-          <div id="lightboxMedia"></div>
-          <h3 id="lightboxTitle" class="lightbox-title"></h3>
         </div>
+        <div class="media-grid" id="media-gallery"></div>
+      </section>
+    </main>
+    <footer class="shell site-footer">
+      <span>FishEye</span>
+      <span>Projet OpenClassrooms</span>
+    </footer>
 
-        <button id="lightbox-next" aria-label="Média suivant">&#10095;</button>
+    <dialog id="contact-modal" class="contact-dialog" aria-labelledby="contact-title" aria-describedby="contact-hint">
+      <div class="dialog-header">
+        <h2 id="contact-title">Contacter</h2>
+        <button class="icon-button" id="contact-close" type="button" aria-label="Fermer le formulaire">×</button>
       </div>
-    </div>
+      <p id="contact-hint" class="form-hint">Formulaire de démonstration.</p>
+      <form id="contact-form">
+        <div class="name-fields">
+          <label for="first-name">Prénom
+            <input type="text" id="first-name" name="firstName" autocomplete="given-name" required autofocus />
+          </label>
+          <label for="last-name">Nom
+            <input type="text" id="last-name" name="lastName" autocomplete="family-name" required />
+          </label>
+        </div>
+        <label for="email">Adresse e-mail
+          <input type="email" id="email" name="email" autocomplete="email" required />
+        </label>
+        <label for="message">Votre message
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </label>
+        <button class="primary-button" type="submit">Valider</button>
+        <p class="form-status" id="contact-status" role="status"></p>
+      </form>
+    </dialog>
 
-    <!-- Scripts -->
-    <script type="module" src="scripts/pages/photographer.js"></script>
-    <script type="module" src="scripts/utils/modal.js"></script>
-    <script type="module" src="scripts/utils/lightbox.js"></script>
-    <script type="module" src="scripts/utils/contactForm.js"></script>
+    <dialog id="lightbox" class="lightbox" aria-label="Galerie plein écran">
+      <div class="lightbox-header">
+        <p id="lightbox-position"></p>
+        <button class="icon-button" id="lightbox-close" type="button" aria-label="Fermer la galerie" autofocus>×</button>
+      </div>
+      <div id="lightbox-media" class="lightbox-media"></div>
+      <div class="lightbox-footer">
+        <button class="icon-button" id="lightbox-prev" type="button" aria-label="Média précédent">←</button>
+        <p class="lightbox-title" id="lightbox-title" lang="en" aria-live="polite"></p>
+        <button class="icon-button" id="lightbox-next" type="button" aria-label="Média suivant">→</button>
+      </div>
+      <div class="lightbox-strip" id="lightbox-strip" role="group" aria-label="Choisir un média"></div>
+    </dialog>
   </body>
 </html>

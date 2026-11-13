@@ -1,57 +1,54 @@
-function PhotoMedia(media, photographerId) {
+import { mediaSources } from '../catalogue.js';
+
+export function mediaFactory(media, aboveFold = false) {
+  const sources = mediaSources(media);
+
   function getCardDOM() {
-    const mediaButton = document.createElement('button');
-    mediaButton.type = 'button';
-    mediaButton.className = 'media-button';
-    mediaButton.setAttribute('aria-label', `Open media ${media.title} in lightbox`);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'media-button';
+    button.setAttribute('aria-label', 'Ouvrir : ' + media.title);
+    button.setAttribute('aria-haspopup', 'dialog');
 
-    const mediaElement = document.createElement('img');
-    mediaElement.src = `assets/photographers/${photographerId}/${media.image}`;
-    mediaElement.alt = media.title;
+    const preview = document.createElement('img');
+    preview.src = sources.preview;
+    preview.alt = '';
+    preview.loading = aboveFold ? 'eager' : 'lazy';
+    preview.decoding = 'async';
+    button.append(preview);
+    if (media.video) {
+      const play = document.createElement('span');
+      play.className = 'media-play';
+      play.textContent = '▶';
+      play.setAttribute('aria-hidden', 'true');
+      button.append(play);
+    }
 
-    mediaButton.appendChild(mediaElement);
-    return mediaButton;
+    return button;
   }
 
   function getLightboxDOM() {
-    const node = document.createElement('img');
-    node.src = `assets/photographers/${photographerId}/${media.image}`;
-    node.alt = media.title;
-    return node;
+    if (media.video) {
+      const video = document.createElement('video');
+      video.src = sources.full;
+      video.poster = sources.preview;
+      video.controls = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      video.setAttribute('aria-label', media.title);
+      return video;
+    }
+
+    const photo = document.createElement('img');
+    photo.src = sources.preview;
+    photo.alt = media.title;
+    const full = new Image();
+    full.src = sources.full;
+    full.decode().then(() => {
+      if (photo.isConnected) photo.src = full.src;
+    }, () => {});
+    return photo;
   }
 
   return { getCardDOM, getLightboxDOM };
-}
-
-function VideoMedia(media, photographerId) {
-  function getCardDOM() {
-    const mediaButton = document.createElement('button');
-    mediaButton.type = 'button';
-    mediaButton.className = 'media-button';
-    mediaButton.setAttribute('aria-label', `Open media ${media.title} in lightbox`);
-
-    const mediaElement = document.createElement('video');
-    mediaElement.src = `assets/photographers/${photographerId}/${media.video}`;
-    mediaElement.controls = false;
-    mediaElement.setAttribute('aria-label', media.title);
-
-    mediaButton.appendChild(mediaElement);
-    return mediaButton;
-  }
-
-  function getLightboxDOM() {
-    const node = document.createElement('video');
-    node.src = `assets/photographers/${photographerId}/${media.video}`;
-    node.controls = true;
-    node.setAttribute('aria-label', media.title);
-    return node;
-  }
-
-  return { getCardDOM, getLightboxDOM };
-}
-
-export function mediaFactory(media, photographerId) {
-  if (media.image) return PhotoMedia(media, photographerId);
-  if (media.video) return VideoMedia(media, photographerId);
-  throw new Error(`Unsupported media type for "${media.title}"`);
 }
