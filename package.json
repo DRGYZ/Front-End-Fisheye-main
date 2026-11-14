@@ -1,12 +1,14 @@
 {
   "name": "front-end-fisheye-main",
   "version": "1.0.0",
-  "description": "## Démarrer le projet",
-  "main": "index.js",
+  "description": "Annuaire et portfolios de photographes en JavaScript.",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint \"scripts/**/*.js\"",
-    "lint:fix": "eslint \"scripts/**/*.js\" --fix"
+    "test": "node --test",
+    "lint": "eslint scripts tests",
+    "lint:fix": "npm run lint -- --fix",
+    "verify": "npm run lint && npm test"
   },
   "repository": {
     "type": "git",
@@ -22,8 +24,6 @@
   "devDependencies": {
     "@eslint/js": "^9.34.0",
     "eslint": "^9.34.0",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^16.3.0",
-    "prettier": "^3.6.2"
+    "globals": "^16.3.0"
   }
 }

@@ -1,31 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <title>Fisheye</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Parcourez les portfolios des photographes FishEye, leurs planches-contacts et leurs tarifs." />
+    <title>FishEye | Studio &amp; Épreuves</title>
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <link
-      href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap"
-      rel="stylesheet"
-    />
-    <link href="css/photographer.css" rel="stylesheet" type="text/css" />
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="scripts/pages/index.js"></script>
   </head>
-
   <body>
-    <header class="header">
-      <img src="assets/images/logo.png" class="logo" alt="Fisheye logo" />
-      <h1 class="page-title">Nos photographes</h1>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+
+    <header class="site-header">
+      <div class="shell masthead">
+        <a class="brand" href="index.html" aria-label="FishEye, accueil">
+          <span class="brand-mark" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="3.5" />
+              <line x1="12" y1="3" x2="12" y2="8.5" />
+              <line x1="19.8" y1="16.5" x2="15" y2="13.8" />
+              <line x1="4.2" y1="16.5" x2="9" y2="13.8" />
+            </svg>
+          </span>
+          <span class="brand-copy">
+            <span class="brand-wordmark">FishEye</span>
+            <span class="brand-sub">Agence &amp; Tirages d’auteur</span>
+          </span>
+        </a>
+        <div class="header-right">
+          <p class="header-meta" id="directory-count">06 photographes</p>
+        </div>
+      </div>
     </header>
 
-    <main class="photographer_section" aria-label="List of photographers">
-      <section class="photographer_section" id="photographer-list">
-        <!-- Cards will be injected here dynamically -->
+    <main class="shell directory" id="main" tabindex="-1">
+      <section class="dir-hero" aria-labelledby="directory-heading">
+        <div>
+          <p class="eyebrow">Collection printemps · 06 auteurs</p>
+          <h1 id="directory-heading" class="dir-title">Six regards singuliers, feuilletés planche après planche.</h1>
+          <p class="dir-lead">Parcourez chaque planche-contact directement dans l’annuaire ou ouvrez un portfolio complet pour explorer les séries, trier et aimer.</p>
+        </div>
       </section>
+
+      <p id="directory-status" class="page-status" role="status">Chargement des portfolios…</p>
+
+      <div id="directory-browser" hidden>
+        <div class="filter-bar" id="directory-filters" role="group" aria-label="Filtrer par spécialité"></div>
+        <div class="roster-grid" id="photographer-roster"></div>
+      </div>
     </main>
 
-    <!-- Scripts -->
-    <script type="module" src="scripts/templates/photographer.js"></script>
-    <script type="module" src="scripts/pages/index.js"></script>
+    <footer class="shell site-footer">
+      <span>FishEye · Studio &amp; Épreuves</span>
+      <span>Catalogue des auteurs</span>
+    </footer>
   </body>
 </html>

@@ -1,131 +1,102 @@
-let _index = 0;
-let _items = [];
-let _pid = null;
-let _wired = false;
-let _lastFocusedElement = null;
+import { mediaSources } from '../catalogue.js';
+import { mediaFactory } from '../factories/media.js';
+import { closeOnBackdrop } from './dialog.js';
 
-function els() {
-  return {
-    lb: document.getElementById('lightbox'),
-    media: document.getElementById('lightboxMedia'),
-    title: document.getElementById('lightboxTitle'),
-    btnClose: document.getElementById('lightbox-close'),
-    btnNext: document.getElementById('lightbox-next'),
-    btnPrev: document.getElementById('lightbox-prev'),
-  };
-}
+const dialog = document.getElementById('lightbox');
+const mediaContainer = document.getElementById('lightbox-media');
+const title = document.getElementById('lightbox-title');
+const position = document.getElementById('lightbox-position');
+const strip = document.getElementById('lightbox-strip');
+const previous = document.getElementById('lightbox-prev');
+const next = document.getElementById('lightbox-next');
 
-function render() {
-  const { media, title } = els();
-  if (!_items.length || !media) return;
+let activeIndex = 0;
+let mediaItems = [];
+let opener;
 
-  const m = _items[_index];
-  media.innerHTML = '';
+function render(direction = 0) {
+  const media = mediaItems[activeIndex];
+  const asset = mediaFactory(media).getLightboxDOM();
+  mediaContainer.replaceChildren(asset);
+  const year = media.date ? media.date.slice(0, 4) : '';
+  title.textContent = year ? media.title + ' (' + year + ')' : media.title;
+  position.textContent = (activeIndex + 1) + ' / ' + mediaItems.length;
+  previous.disabled = next.disabled = mediaItems.length < 2;
 
-  let node;
-  if (m.image) {
-    node = document.createElement('img');
-    node.src = `assets/photographers/${_pid}/${m.image}`;
-    node.alt = m.title;
-  } else {
-    node = document.createElement('video');
-    node.src = `assets/photographers/${_pid}/${m.video}`;
-    node.controls = true;
-    node.setAttribute('aria-label', m.title);
+  for (const [index, button] of Array.from(strip.children).entries()) {
+    button.setAttribute('aria-pressed', String(index === activeIndex));
+  }
+  const activeFrame = strip.children[activeIndex];
+  if (activeFrame) {
+    strip.scrollLeft +=
+      activeFrame.getBoundingClientRect().left -
+      strip.getBoundingClientRect().left -
+      (strip.clientWidth - activeFrame.offsetWidth) / 2;
   }
 
-  media.appendChild(node);
-  if (title) title.textContent = m.title;
-}
-
-export function displayLightbox(index, items, photographerId) {
-  _lastFocusedElement = document.activeElement instanceof HTMLElement
-    ? document.activeElement
-    : null;
-
-  _index = index;
-  _items = items || [];
-  _pid = photographerId;
-
-  const { lb, btnClose } = els();
-  if (!lb) return;
-
-  lb.classList.remove('hidden');
-  lb.classList.add('active');
-  lb.setAttribute('aria-hidden', 'false');
-
-  wireControlsOnce();
-  render();
-
-  if (btnClose) {
-    btnClose.focus();
-  } else {
-    lb.setAttribute('tabindex', '-1');
-    lb.focus();
+  if (direction && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    asset.animate(
+      [{ opacity: 0.45, transform: 'translateX(' + direction * 16 + 'px)' }, { opacity: 1, transform: 'none' }],
+      { duration: 200, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+    );
   }
 }
 
-export function closeLightbox() {
-  const { lb, media } = els();
-  if (!lb) return;
-
-  restoreFocusAfterClose();
-
-  lb.classList.add('hidden');
-  lb.classList.remove('active');
-  lb.setAttribute('aria-hidden', 'true');
-
-  if (media) media.innerHTML = '';
+function move(offset, animate) {
+  activeIndex = (activeIndex + offset + mediaItems.length) % mediaItems.length;
+  render(animate ? offset : 0);
 }
 
-export function next() {
-  if (!_items.length) return;
-  _index = (_index + 1) % _items.length;
+export function openLightbox(index, items, trigger) {
+  activeIndex = index;
+  mediaItems = items;
+  opener = trigger;
+  strip.replaceChildren(
+    ...items.map((item, idx) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'lightbox-frame';
+      button.setAttribute('aria-label', item.title);
+      button.setAttribute('aria-pressed', 'false');
+
+      const frame = document.createElement('img');
+      frame.src = mediaSources(item).preview;
+      frame.alt = '';
+      frame.loading = 'lazy';
+      frame.decoding = 'async';
+      button.append(frame);
+
+      button.addEventListener('click', (event) => {
+        if (activeIndex === idx) return;
+        const direction = Math.sign(idx - activeIndex);
+        activeIndex = idx;
+        render(event.detail ? direction : 0);
+      });
+      return button;
+    }),
+  );
+  dialog.showModal();
   render();
 }
 
-export function prev() {
-  if (!_items.length) return;
-  _index = (_index - 1 + _items.length) % _items.length;
-  render();
-}
+previous.addEventListener('click', (event) => move(-1, event.detail > 0));
+next.addEventListener('click', (event) => move(1, event.detail > 0));
+document.getElementById('lightbox-close').addEventListener('click', () => dialog.close());
+closeOnBackdrop(dialog);
 
-function wireControlsOnce() {
-  // Une seule initialisation évite les doubles déclenchements clavier/clic au fil des ouvertures.
-  if (_wired) return;
-  const { btnClose, btnNext, btnPrev } = els();
+dialog.addEventListener('close', () => {
+  mediaContainer.replaceChildren();
+  strip.replaceChildren();
+  opener?.focus();
+});
 
-  btnClose?.addEventListener('click', closeLightbox);
-  btnNext?.addEventListener('click', next);
-  btnPrev?.addEventListener('click', prev);
-
-  document.addEventListener('keydown', (e) => {
-    const { lb } = els();
-    if (!lb || !lb.classList.contains('active')) return;
-
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') next();
-    if (e.key === 'ArrowLeft') prev();
-  });
-
-  _wired = true;
-}
-
-function restoreFocusAfterClose() {
-  if (_lastFocusedElement && document.contains(_lastFocusedElement)) {
-    _lastFocusedElement.focus();
-    return;
+dialog.addEventListener('keydown', (event) => {
+  if (mediaItems.length < 2 || event.target instanceof HTMLVideoElement || event.altKey) return;
+  if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+    event.preventDefault();
+    move(event.key === 'ArrowLeft' ? -1 : 1, false);
+    if (strip.contains(event.target)) {
+      strip.children[activeIndex]?.focus({ preventScroll: true });
+    }
   }
-
-  const fallbackButton = document.querySelector('.media-button');
-  if (fallbackButton instanceof HTMLElement) {
-    fallbackButton.focus();
-    return;
-  }
-
-  const main = document.getElementById('main');
-  if (main instanceof HTMLElement) {
-    if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
-    main.focus();
-  }
-}
+});
